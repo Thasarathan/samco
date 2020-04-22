@@ -5,9 +5,11 @@ import java.util.Objects;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import in.samco.stockNoteJavaSDK.payload.dto.BaseRequestEntity;
 
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 public class OrderRequest extends BaseRequestEntity {
 
 	@JsonIgnore

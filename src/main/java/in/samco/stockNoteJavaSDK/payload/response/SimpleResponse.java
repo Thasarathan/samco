@@ -4,10 +4,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import in.samco.stockNoteJavaSDK.payload.dto.BaseResponseEntity;
 
-
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 public class SimpleResponse extends BaseResponseEntity {
-	
+
 	private String status;
 	private String statusMessage;
 

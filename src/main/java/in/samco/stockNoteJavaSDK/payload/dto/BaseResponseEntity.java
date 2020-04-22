@@ -23,13 +23,6 @@ public class BaseResponseEntity extends BaseResource {
 		this.requestTime = requestTime;
 	}
 
-	/*
-	 * public UserContext getUserContext() { return userContext; }
-	 * 
-	 * public void setUserContext(UserContext userContext) { this.userContext =
-	 * userContext; }
-	 */
-
 	public String getServerTime() {
 		return serverTime;
 	}

@@ -18,4 +18,10 @@ public class OptionChainResponse extends SimpleResponse {
 	public void setOptionChainResults(List<OptionChain> optionChainResults) {
 		this.optionChainResults = optionChainResults;
 	}
+
+	@Override
+	public String toString() {
+		return "OptionChainResponse [optionChainResults=" + optionChainResults + "]";
+	}
+
 }

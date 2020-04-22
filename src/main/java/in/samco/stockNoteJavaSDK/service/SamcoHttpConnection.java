@@ -8,11 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientResponseException;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -22,15 +20,18 @@ import in.samco.stockNoteJavaSDK.payload.request.LoginRequest;
 import in.samco.stockNoteJavaSDK.payload.request.OptionChainRequest;
 import in.samco.stockNoteJavaSDK.payload.request.OrderRequest;
 import in.samco.stockNoteJavaSDK.payload.request.QuoteRequest;
+import in.samco.stockNoteJavaSDK.payload.response.EquitySearchResponse;
+import in.samco.stockNoteJavaSDK.payload.response.OptionChainResponse;
+import in.samco.stockNoteJavaSDK.payload.response.OrderResponse;
+import in.samco.stockNoteJavaSDK.payload.response.QuoteResponse;
 import in.samco.stockNoteJavaSDK.utils.Utils;
 
 public class SamcoHttpConnection {
 
-	private final Logger log = LoggerFactory.getLogger(SamcoHttpConnection.class);
-	RestTemplate restTemplate = new RestTemplate();
-	Routes routes = new Routes();
-	Utils utils = new Utils();
-
+	private static final Logger log = LoggerFactory.getLogger(SamcoHttpConnection.class);
+	private static final Routes routes = new Routes();
+	private static final Utils utils = new Utils();
+	private static final Gson gson = new Gson();
 	private String sessionToken;
 
 	public String getLoginSession(LoginRequest loginRequest) throws IOException {
@@ -43,45 +44,30 @@ public class SamcoHttpConnection {
 
 			ObjectMapper obj = new ObjectMapper();
 			String reqString = obj.writeValueAsString(loginRequest);
+			HttpEntity<String> entity = new HttpEntity<String>(reqString, headers);
 
-			HttpEntity<String> request = new HttpEntity<String>(reqString, headers);
+			ResponseEntity<?> responseEntity = utils.getRestTemplateResponse(loginUrl, "POST", entity, String.class,
+					null);
 
-			utils.setTimeout(restTemplate);
-			ResponseEntity<String> response = restTemplate.postForEntity(loginUrl, request, String.class);
-
-			String responseBody = response.getBody();
-			Gson gson = new Gson();
+			String responseBody = (String) responseEntity.getBody();
 			SamcoHttpConnection json = gson.fromJson(responseBody, SamcoHttpConnection.class);
 
 			if (json.sessionToken != null) {
 				session = json.sessionToken;
 			}
 		} catch (Exception e) {
-			System.out.println("Exception " + e);
-			System.out.println("Exception getMessage " + e.getMessage());
-
-			if (e.getMessage().contains("Read timed out")) {
-				String response = utils.getSamcoException("Time Out Exception while reading option chain api.");
-				session = utils.prettyJson(response);
-				return session;
-
-			} else if (e.getMessage().contains("Connection refused")) {
-
-				String response = utils.getSamcoException("Connection refused while reading option chain api.");
-				session = utils.prettyJson(response);
-				return session;
-			}
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
 		}
 
 		return session;
 	}
 
-	public String getOptionChainDetails(OptionChainRequest optionChainRequest) throws JSONException, IOException {
-		String prettyJsonString = null;
+	public OptionChainResponse getOptionChainDetails(OptionChainRequest optionChainRequest)
+			throws JSONException, IOException {
+		OptionChainResponse optionChainResponse = null;
 
 		try {
-
-			log.info("option chain url : " + routes.get("option.chain"));
 			String optionChainUrl = routes.get("option.chain")
 					.replace(":exchange", "exchange=" + optionChainRequest.getExchange())
 					.replace(":searchSymbolName", "&searchSymbolName=" + optionChainRequest.getSearchSymbolName());
@@ -113,54 +99,31 @@ public class SamcoHttpConnection {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.set("x-session-token", optionChainRequest.getSessionToken());
-
 			HttpEntity<String> entity = new HttpEntity<String>(headers);
 
-			utils.setTimeout(restTemplate);
-			HttpEntity<String> response = null;
-			String responseBodyAsString = null;
+			ResponseEntity<?> responseEntity = null;
 			try {
-				response = restTemplate.exchange(optionChainUrl, HttpMethod.GET, entity, String.class, params);
+				responseEntity = utils.getRestTemplateResponse(optionChainUrl, "GET", entity, OptionChainResponse.class,
+						params);
+				optionChainResponse = (OptionChainResponse) responseEntity.getBody();
+
 			} catch (RestClientResponseException e) {
-				responseBodyAsString = e.getResponseBodyAsString();
+				optionChainResponse = gson.fromJson(e.getResponseBodyAsString(), OptionChainResponse.class);
 			}
-
-			String responseBody;
-			if (response != null) {
-				responseBody = response.getBody();
-			} else {
-				responseBody = responseBodyAsString;
-			}
-
-			prettyJsonString = utils.prettyJson(responseBody);
 
 		} catch (Exception e) {
-			System.out.println("Exception " + e);
-			System.out.println("Exception getMessage " + e.getMessage());
-
-			if (e.getMessage().contains("Read timed out")) {
-				String response = utils.getSamcoException("Time Out Exception while reading option chain api.");
-				prettyJsonString = utils.prettyJson(response);
-				return prettyJsonString;
-
-			} else if (e.getMessage().contains("Connection refused")) {
-
-				String response = utils.getSamcoException("Connection refused while reading option chain api.");
-				prettyJsonString = utils.prettyJson(response);
-				return prettyJsonString;
-			}
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
 		}
 
-		return prettyJsonString;
+		return optionChainResponse;
 	}
 
-	public String getEquitySearchDetails(EquitySearchRequest equitySearchRequest) throws JSONException, IOException {
-		String prettyJsonString = null;
+	public EquitySearchResponse getEquitySearchDetails(EquitySearchRequest equitySearchRequest)
+			throws JSONException, IOException {
+		EquitySearchResponse equitySearchResponse = null;
 
 		try {
-
-			log.info("equitySearchUrl  " + routes.get("equity.search"));
-			log.info("equitySearchRequest.getSessionToken() "+equitySearchRequest.getSessionToken());
 			String equitySearchUrl = routes.get("equity.search")
 					.replace(":exchange", "exchange=" + equitySearchRequest.getExchange())
 					.replace(":searchSymbolName", "&searchSymbolName=" + equitySearchRequest.getSearchSymbolName());
@@ -171,49 +134,28 @@ public class SamcoHttpConnection {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.set("x-session-token", equitySearchRequest.getSessionToken());
-
 			HttpEntity<String> entity = new HttpEntity<String>(headers);
 
-//			utils.setTimeout(restTemplate);
-			HttpEntity<String> response = null;
-			String responseBodyAsString = null;
+			ResponseEntity<?> responseEntity = null;
 			try {
-				response = restTemplate.exchange(equitySearchUrl, HttpMethod.GET, entity, String.class, params);
+				responseEntity = utils.getRestTemplateResponse(equitySearchUrl, "GET", entity,
+						EquitySearchResponse.class, params);
+				equitySearchResponse = (EquitySearchResponse) responseEntity.getBody();
+
 			} catch (RestClientResponseException e) {
-				responseBodyAsString = e.getResponseBodyAsString();
+				equitySearchResponse = gson.fromJson(e.getResponseBodyAsString(), EquitySearchResponse.class);
 			}
-
-			String responseBody;
-			if (response != null) {
-				responseBody = response.getBody();
-			} else {
-				responseBody = responseBodyAsString;
-			}
-
-			prettyJsonString = utils.prettyJson(responseBody);
 
 		} catch (Exception e) {
-			System.out.println("Exception " + e);
-			System.out.println("Exception getMessage " + e.getMessage());
-
-			if (e.getMessage().contains("Read timed out")) {
-				String response = utils.getSamcoException("Time Out Exception while fetching Equity Search .");
-				prettyJsonString = utils.prettyJson(response);
-				return prettyJsonString;
-
-			} else if (e.getMessage().contains("Connection refused")) {
-
-				String response = utils.getSamcoException("Connection refused while fetching Equity Search .");
-				prettyJsonString = utils.prettyJson(response);
-				return prettyJsonString;
-			}
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
 		}
 
-		return prettyJsonString;
+		return equitySearchResponse;
 	}
 
-	public String getQuoteDetails(QuoteRequest quoteRequest) throws JSONException, IOException {
-		String prettyJsonString = null;
+	public QuoteResponse getQuoteDetails(QuoteRequest quoteRequest) throws JSONException, IOException {
+		QuoteResponse quoteResponse = null;
 
 		try {
 			String equitySearchUrl = routes.get("quote.search")
@@ -226,52 +168,30 @@ public class SamcoHttpConnection {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.set("x-session-token", quoteRequest.getSessionToken());
-
 			HttpEntity<String> entity = new HttpEntity<String>(headers);
 
-//			utils.setTimeout(restTemplate);
-			HttpEntity<String> response = null;
-			String responseBodyAsString = null;
+			ResponseEntity<?> responseEntity = null;
 			try {
-				response = restTemplate.exchange(equitySearchUrl, HttpMethod.GET, entity, String.class, params);
+				responseEntity = utils.getRestTemplateResponse(equitySearchUrl, "GET", entity, QuoteResponse.class,
+						params);
+				quoteResponse = (QuoteResponse) responseEntity.getBody();
+
 			} catch (RestClientResponseException e) {
-				responseBodyAsString = e.getResponseBodyAsString();
+				quoteResponse = gson.fromJson(e.getResponseBodyAsString(), QuoteResponse.class);
 			}
-
-			String responseBody;
-			if (response != null) {
-				responseBody = response.getBody();
-			} else {
-				responseBody = responseBodyAsString;
-			}
-
-			prettyJsonString = utils.prettyJson(responseBody);
 
 		} catch (Exception e) {
-			System.out.println("Exception " + e);
-			System.out.println("Exception getMessage " + e.getMessage());
-
-			if (e.getMessage().contains("Read timed out")) {
-				String response = utils.getSamcoException("Time Out Exception while fetching Quote data.");
-				prettyJsonString = utils.prettyJson(response);
-				return prettyJsonString;
-
-			} else if (e.getMessage().contains("Connection refused")) {
-
-				String response = utils.getSamcoException("Connection refused while fetching Quote data.");
-				prettyJsonString = utils.prettyJson(response);
-				return prettyJsonString;
-			}
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
 		}
 
-		return prettyJsonString;
+		return quoteResponse;
 	}
 
-	public String placeOrder(OrderRequest orderRequest) throws JSONException, IOException {
-		String prettyJsonString = null;
+	public OrderResponse placeOrder(OrderRequest orderRequest) throws JSONException, IOException {
+		OrderResponse orderResponse = null;
 
 		try {
-
 			String placeOrderUrl = routes.get("place.order");
 
 			ObjectMapper obj = new ObjectMapper();
@@ -280,45 +200,24 @@ public class SamcoHttpConnection {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.set("x-session-token", orderRequest.getSessionToken());
-
 			HttpEntity<String> entity = new HttpEntity<String>(reqString, headers);
 
-			utils.setTimeout(restTemplate);
-			HttpEntity<String> response = null;
-			String responseBodyAsString = null;
+			ResponseEntity<?> responseEntity = null;
 			try {
-				response = restTemplate.postForEntity(placeOrderUrl, entity, String.class);
+				responseEntity = utils.getRestTemplateResponse(placeOrderUrl, "POST", entity, OrderResponse.class,
+						null);
+				orderResponse = (OrderResponse) responseEntity.getBody();
+
 			} catch (RestClientResponseException e) {
-				responseBodyAsString = e.getResponseBodyAsString();
+				orderResponse = gson.fromJson(e.getResponseBodyAsString(), OrderResponse.class);
 			}
-
-			String responseBody;
-			if (response != null) {
-				responseBody = response.getBody();
-			} else {
-				responseBody = responseBodyAsString;
-			}
-
-			prettyJsonString = utils.prettyJson(responseBody);
 
 		} catch (Exception e) {
-			System.out.println("Exception " + e);
-			System.out.println("Exception getMessage " + e.getMessage());
-
-			if (e.getMessage().contains("Read timed out")) {
-				String response = utils.getSamcoException("Time Out Exception while Placing Order.");
-				prettyJsonString = utils.prettyJson(response);
-				return prettyJsonString;
-
-			} else if (e.getMessage().contains("Connection refused")) {
-
-				String response = utils.getSamcoException("Connection refused while Placing Order.");
-				prettyJsonString = utils.prettyJson(response);
-				return prettyJsonString;
-			}
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
 		}
 
-		return prettyJsonString;
+		return orderResponse;
 	}
 
 }

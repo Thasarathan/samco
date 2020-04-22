@@ -17,6 +17,8 @@ public class QuoteRequest extends BaseRequestEntity {
 	@NotBlank(message = "Search Symbol Name is mandatory")
 	private String searchSymbolName;
 
+	private String instrumentType;
+
 	public QuoteRequest(@NotBlank(message = "Session token is mandatory.") String sessionToken,
 			@NotBlank(message = "Exchange is mandatory.") String exchange,
 			@NotBlank(message = "Search Symbol Name is mandatory") String searchSymbolName) {
@@ -48,6 +50,14 @@ public class QuoteRequest extends BaseRequestEntity {
 
 	public void setSessionToken(String sessionToken) {
 		this.sessionToken = sessionToken;
+	}
+
+	public String getInstrumentType() {
+		return instrumentType;
+	}
+
+	public void setInstrumentType(String instrumentType) {
+		this.instrumentType = instrumentType;
 	}
 
 	@Override
