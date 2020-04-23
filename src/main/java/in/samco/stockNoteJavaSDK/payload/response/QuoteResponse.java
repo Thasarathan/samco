@@ -14,7 +14,6 @@ public class QuoteResponse extends BaseResponseEntity {
 	private String status;
 	private String statusMessage;
 	private String symbolName;
-	private String serverTime;
 	private String tradingSymbol;
 	private String exchange;
 	private String companyName;
@@ -79,14 +78,6 @@ public class QuoteResponse extends BaseResponseEntity {
 
 	public void setSymbolName(String symbolName) {
 		this.symbolName = symbolName;
-	}
-
-	public String getServerTime() {
-		return serverTime;
-	}
-
-	public void setServerTime(String serverTime) {
-		this.serverTime = serverTime;
 	}
 
 	public String getTradingSymbol() {
@@ -372,20 +363,20 @@ public class QuoteResponse extends BaseResponseEntity {
 	@Override
 	public String toString() {
 		return "QuoteResponse [status=" + status + ", statusMessage=" + statusMessage + ", symbolName=" + symbolName
-				+ ", serverTime=" + serverTime + ", tradingSymbol=" + tradingSymbol + ", exchange=" + exchange
-				+ ", companyName=" + companyName + ", lastTradedTime=" + lastTradedTime + ", lastTradedPrice="
-				+ lastTradedPrice + ", previousClose=" + previousClose + ", changeValue=" + changeValue
-				+ ", changePercentage=" + changePercentage + ", lastTradedQuantity=" + lastTradedQuantity
-				+ ", lowerCircuitLimit=" + lowerCircuitLimit + ", upperCircuitLimit=" + upperCircuitLimit
-				+ ", averagePrice=" + averagePrice + ", openValue=" + openValue + ", highValue=" + highValue
-				+ ", lowValue=" + lowValue + ", closeValue=" + closeValue + ", totalBuyQuantity=" + totalBuyQuantity
-				+ ", totalSellQuantity=" + totalSellQuantity + ", totalTradedValue=" + totalTradedValue
-				+ ", totalTradedVolume=" + totalTradedVolume + ", yearlyHighPrice=" + yearlyHighPrice
-				+ ", yearlyLowPrice=" + yearlyLowPrice + ", tickSize=" + tickSize + ", openInterest=" + openInterest
-				+ ", bestBids=" + bestBids + ", bestAsks=" + bestAsks + ", expiryDate=" + expiryDate + ", spotPrice="
-				+ spotPrice + ", instrument=" + instrument + ", lotQuantity=" + lotQuantity + ", listingId=" + listingId
-				+ ", strikePrice=" + strikePrice + ", openInterestChange=" + openInterestChange + ", prevOpenInterest="
-				+ prevOpenInterest + ", oIChangePer=" + oIChangePer + "]";
+				+ ", tradingSymbol=" + tradingSymbol + ", exchange=" + exchange + ", companyName=" + companyName
+				+ ", lastTradedTime=" + lastTradedTime + ", lastTradedPrice=" + lastTradedPrice + ", previousClose="
+				+ previousClose + ", changeValue=" + changeValue + ", changePercentage=" + changePercentage
+				+ ", lastTradedQuantity=" + lastTradedQuantity + ", lowerCircuitLimit=" + lowerCircuitLimit
+				+ ", upperCircuitLimit=" + upperCircuitLimit + ", averagePrice=" + averagePrice + ", openValue="
+				+ openValue + ", highValue=" + highValue + ", lowValue=" + lowValue + ", closeValue=" + closeValue
+				+ ", totalBuyQuantity=" + totalBuyQuantity + ", totalSellQuantity=" + totalSellQuantity
+				+ ", totalTradedValue=" + totalTradedValue + ", totalTradedVolume=" + totalTradedVolume
+				+ ", yearlyHighPrice=" + yearlyHighPrice + ", yearlyLowPrice=" + yearlyLowPrice + ", tickSize="
+				+ tickSize + ", openInterest=" + openInterest + ", bestBids=" + bestBids + ", bestAsks=" + bestAsks
+				+ ", expiryDate=" + expiryDate + ", spotPrice=" + spotPrice + ", instrument=" + instrument
+				+ ", lotQuantity=" + lotQuantity + ", listingId=" + listingId + ", strikePrice=" + strikePrice
+				+ ", openInterestChange=" + openInterestChange + ", prevOpenInterest=" + prevOpenInterest
+				+ ", oIChangePer=" + oIChangePer + "]";
 	}
 
 }

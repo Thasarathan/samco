@@ -9,7 +9,6 @@ import in.samco.stockNoteJavaSDK.payload.dto.ScripDetails;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 public class EquitySearchResponse extends SimpleResponse {
 
-//	private String serverTime;
 	List<ScripDetails> searchResults;
 	public List<CurrencyResponse> currencyValues;
 	public List<CommodityDerivativeResponse> commodityValues;
@@ -17,11 +16,6 @@ public class EquitySearchResponse extends SimpleResponse {
 
 	public List<CurrencyResponse> getCurrencyValues() {
 		return currencyValues;
-	}
-
-	@Override
-	public String getServerTime() {
-		return "";
 	}
 
 	public void setCurrencyValues(List<CurrencyResponse> currencyValues) {

@@ -15,6 +15,8 @@ public class Routes {
 		routes.put("equity.search", "/eqDervSearch/search?:exchange:searchSymbolName");
 		routes.put("quote.search", "/quote/getQuote?:exchange:symbolName");
 		routes.put("place.order", "/order/placeOrder");
+		routes.put("order.status", "/order/getOrderStatus?:orderNumber");
+		routes.put("user.limit", "/limit/getLimits");
 
 	};
 

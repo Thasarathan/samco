@@ -19,11 +19,15 @@ import in.samco.stockNoteJavaSDK.payload.request.EquitySearchRequest;
 import in.samco.stockNoteJavaSDK.payload.request.LoginRequest;
 import in.samco.stockNoteJavaSDK.payload.request.OptionChainRequest;
 import in.samco.stockNoteJavaSDK.payload.request.OrderRequest;
+import in.samco.stockNoteJavaSDK.payload.request.OrderStatusRequest;
 import in.samco.stockNoteJavaSDK.payload.request.QuoteRequest;
+import in.samco.stockNoteJavaSDK.payload.request.UserLimitRequest;
 import in.samco.stockNoteJavaSDK.payload.response.EquitySearchResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OptionChainResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OrderResponse;
+import in.samco.stockNoteJavaSDK.payload.response.OrderStatusResponse;
 import in.samco.stockNoteJavaSDK.payload.response.QuoteResponse;
+import in.samco.stockNoteJavaSDK.payload.response.UserLimitResponse;
 import in.samco.stockNoteJavaSDK.utils.Utils;
 
 public class SamcoHttpConnection {
@@ -218,6 +222,71 @@ public class SamcoHttpConnection {
 		}
 
 		return orderResponse;
+	}
+
+	public OrderStatusResponse getOrderStatus(OrderStatusRequest orderStatusRequest) throws JSONException, IOException {
+		OrderStatusResponse orderStatusResponse = null;
+
+		try {
+			String orderStatusUrl = routes.get("order.status").replace(":orderNumber",
+					"orderNumber=" + orderStatusRequest.getOrderNumber());
+
+			ObjectMapper objectMapper = new ObjectMapper();
+			HashMap<String, String> params = objectMapper.convertValue(orderStatusRequest, HashMap.class);
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("x-session-token", orderStatusRequest.getSessionToken());
+			HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+			ResponseEntity<?> responseEntity = null;
+			try {
+				responseEntity = utils.getRestTemplateResponse(orderStatusUrl, "GET", entity, OrderStatusResponse.class,
+						params);
+				orderStatusResponse = (OrderStatusResponse) responseEntity.getBody();
+
+			} catch (RestClientResponseException e) {
+				orderStatusResponse = gson.fromJson(e.getResponseBodyAsString(), OrderStatusResponse.class);
+			}
+
+		} catch (Exception e) {
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
+		}
+
+		return orderStatusResponse;
+	}
+
+	public UserLimitResponse getUserLimits(UserLimitRequest userLimitRequest) throws JSONException, IOException {
+		UserLimitResponse userLimitResponse = null;
+
+		try {
+			String userLimitUrl = routes.get("user.limit");
+
+			ObjectMapper objectMapper = new ObjectMapper();
+			HashMap<String, String> params = objectMapper.convertValue(userLimitRequest, HashMap.class);
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("x-session-token", userLimitRequest.getSessionToken());
+			HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+			ResponseEntity<?> responseEntity = null;
+			try {
+				responseEntity = utils.getRestTemplateResponse(userLimitUrl, "GET", entity, UserLimitResponse.class,
+						params);
+				userLimitResponse = (UserLimitResponse) responseEntity.getBody();
+
+			} catch (RestClientResponseException e) {
+				userLimitResponse = gson.fromJson(e.getResponseBodyAsString(), UserLimitResponse.class);
+			}
+
+		} catch (Exception e) {
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
+		}
+
+		return userLimitResponse;
 	}
 
 }
