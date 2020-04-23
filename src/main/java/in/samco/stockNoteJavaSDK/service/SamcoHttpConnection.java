@@ -1,7 +1,6 @@
 package in.samco.stockNoteJavaSDK.service;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -12,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientResponseException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import in.samco.stockNoteJavaSDK.payload.request.EquitySearchRequest;
@@ -23,6 +21,7 @@ import in.samco.stockNoteJavaSDK.payload.request.OrderStatusRequest;
 import in.samco.stockNoteJavaSDK.payload.request.QuoteRequest;
 import in.samco.stockNoteJavaSDK.payload.request.UserLimitRequest;
 import in.samco.stockNoteJavaSDK.payload.response.EquitySearchResponse;
+import in.samco.stockNoteJavaSDK.payload.response.LoginResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OptionChainResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OrderResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OrderStatusResponse;
@@ -36,35 +35,31 @@ public class SamcoHttpConnection {
 	private static final Routes routes = new Routes();
 	private static final Utils utils = new Utils();
 	private static final Gson gson = new Gson();
-	private String sessionToken;
 
-	public String getLoginSession(LoginRequest loginRequest) throws IOException {
-		String session = null;
+	public LoginResponse getLoginSession(LoginRequest loginRequest) {
+		LoginResponse loginResponse = null;
 		try {
 			String loginUrl = routes.get("login");
 
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
+			HttpEntity<LoginRequest> entity = new HttpEntity<LoginRequest>(loginRequest, headers);
 
-			ObjectMapper obj = new ObjectMapper();
-			String reqString = obj.writeValueAsString(loginRequest);
-			HttpEntity<String> entity = new HttpEntity<String>(reqString, headers);
+			ResponseEntity<?> responseEntity = null;
+			try {
+				responseEntity = utils.getRestTemplateResponse(loginUrl, "POST", entity, LoginResponse.class);
+				loginResponse = (LoginResponse) responseEntity.getBody();
 
-			ResponseEntity<?> responseEntity = utils.getRestTemplateResponse(loginUrl, "POST", entity, String.class,
-					null);
-
-			String responseBody = (String) responseEntity.getBody();
-			SamcoHttpConnection json = gson.fromJson(responseBody, SamcoHttpConnection.class);
-
-			if (json.sessionToken != null) {
-				session = json.sessionToken;
+			} catch (RestClientResponseException e) {
+				loginResponse = gson.fromJson(e.getResponseBodyAsString(), LoginResponse.class);
 			}
+
 		} catch (Exception e) {
 			log.error("Exception " + e);
 			log.error("Exception getMessage " + e.getMessage());
 		}
 
-		return session;
+		return loginResponse;
 	}
 
 	public OptionChainResponse getOptionChainDetails(OptionChainRequest optionChainRequest)
@@ -82,14 +77,12 @@ public class SamcoHttpConnection {
 			} else {
 				optionChainUrl = optionChainUrl.replaceAll(":expiryDate", "");
 			}
-
 			if (optionChainRequest.getStrikePrice() != null) {
 				optionChainUrl = optionChainUrl.replaceAll(":strikePrice",
 						"&strikePrice=" + optionChainRequest.getStrikePrice());
 			} else {
 				optionChainUrl = optionChainUrl.replaceAll(":strikePrice", "");
 			}
-
 			if (optionChainRequest.getOptionType() != null) {
 				optionChainUrl = optionChainUrl.replaceAll(":optionType",
 						"&optionType=" + optionChainRequest.getOptionType());
@@ -97,18 +90,15 @@ public class SamcoHttpConnection {
 				optionChainUrl = optionChainUrl.replaceAll(":optionType", "");
 			}
 
-			ObjectMapper objectMapper = new ObjectMapper();
-			HashMap<String, String> params = objectMapper.convertValue(optionChainRequest, HashMap.class);
-
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.set("x-session-token", optionChainRequest.getSessionToken());
-			HttpEntity<String> entity = new HttpEntity<String>(headers);
+			HttpEntity<OptionChainRequest> entity = new HttpEntity<OptionChainRequest>(optionChainRequest, headers);
 
 			ResponseEntity<?> responseEntity = null;
 			try {
-				responseEntity = utils.getRestTemplateResponse(optionChainUrl, "GET", entity, OptionChainResponse.class,
-						params);
+				responseEntity = utils.getRestTemplateResponse(optionChainUrl, "GET", entity,
+						OptionChainResponse.class);
 				optionChainResponse = (OptionChainResponse) responseEntity.getBody();
 
 			} catch (RestClientResponseException e) {
@@ -132,18 +122,15 @@ public class SamcoHttpConnection {
 					.replace(":exchange", "exchange=" + equitySearchRequest.getExchange())
 					.replace(":searchSymbolName", "&searchSymbolName=" + equitySearchRequest.getSearchSymbolName());
 
-			ObjectMapper objectMapper = new ObjectMapper();
-			HashMap<String, String> params = objectMapper.convertValue(equitySearchRequest, HashMap.class);
-
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.set("x-session-token", equitySearchRequest.getSessionToken());
-			HttpEntity<String> entity = new HttpEntity<String>(headers);
+			HttpEntity<EquitySearchRequest> entity = new HttpEntity<EquitySearchRequest>(equitySearchRequest, headers);
 
 			ResponseEntity<?> responseEntity = null;
 			try {
 				responseEntity = utils.getRestTemplateResponse(equitySearchUrl, "GET", entity,
-						EquitySearchResponse.class, params);
+						EquitySearchResponse.class);
 				equitySearchResponse = (EquitySearchResponse) responseEntity.getBody();
 
 			} catch (RestClientResponseException e) {
@@ -166,18 +153,14 @@ public class SamcoHttpConnection {
 					.replace(":exchange", "exchange=" + quoteRequest.getExchange())
 					.replace(":symbolName", "&symbolName=" + quoteRequest.getSearchSymbolName());
 
-			ObjectMapper objectMapper = new ObjectMapper();
-			HashMap<String, String> params = objectMapper.convertValue(quoteRequest, HashMap.class);
-
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.set("x-session-token", quoteRequest.getSessionToken());
-			HttpEntity<String> entity = new HttpEntity<String>(headers);
+			HttpEntity<QuoteRequest> entity = new HttpEntity<QuoteRequest>(quoteRequest, headers);
 
 			ResponseEntity<?> responseEntity = null;
 			try {
-				responseEntity = utils.getRestTemplateResponse(equitySearchUrl, "GET", entity, QuoteResponse.class,
-						params);
+				responseEntity = utils.getRestTemplateResponse(equitySearchUrl, "GET", entity, QuoteResponse.class);
 				quoteResponse = (QuoteResponse) responseEntity.getBody();
 
 			} catch (RestClientResponseException e) {
@@ -198,18 +181,14 @@ public class SamcoHttpConnection {
 		try {
 			String placeOrderUrl = routes.get("place.order");
 
-			ObjectMapper obj = new ObjectMapper();
-			String reqString = obj.writeValueAsString(orderRequest);
-
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.set("x-session-token", orderRequest.getSessionToken());
-			HttpEntity<String> entity = new HttpEntity<String>(reqString, headers);
+			HttpEntity<OrderRequest> entity = new HttpEntity<OrderRequest>(orderRequest, headers);
 
 			ResponseEntity<?> responseEntity = null;
 			try {
-				responseEntity = utils.getRestTemplateResponse(placeOrderUrl, "POST", entity, OrderResponse.class,
-						null);
+				responseEntity = utils.getRestTemplateResponse(placeOrderUrl, "POST", entity, OrderResponse.class);
 				orderResponse = (OrderResponse) responseEntity.getBody();
 
 			} catch (RestClientResponseException e) {
@@ -231,18 +210,15 @@ public class SamcoHttpConnection {
 			String orderStatusUrl = routes.get("order.status").replace(":orderNumber",
 					"orderNumber=" + orderStatusRequest.getOrderNumber());
 
-			ObjectMapper objectMapper = new ObjectMapper();
-			HashMap<String, String> params = objectMapper.convertValue(orderStatusRequest, HashMap.class);
-
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.set("x-session-token", orderStatusRequest.getSessionToken());
-			HttpEntity<String> entity = new HttpEntity<String>(headers);
+			HttpEntity<OrderStatusRequest> entity = new HttpEntity<OrderStatusRequest>(orderStatusRequest, headers);
 
 			ResponseEntity<?> responseEntity = null;
 			try {
-				responseEntity = utils.getRestTemplateResponse(orderStatusUrl, "GET", entity, OrderStatusResponse.class,
-						params);
+				responseEntity = utils.getRestTemplateResponse(orderStatusUrl, "GET", entity,
+						OrderStatusResponse.class);
 				orderStatusResponse = (OrderStatusResponse) responseEntity.getBody();
 
 			} catch (RestClientResponseException e) {
@@ -263,18 +239,14 @@ public class SamcoHttpConnection {
 		try {
 			String userLimitUrl = routes.get("user.limit");
 
-			ObjectMapper objectMapper = new ObjectMapper();
-			HashMap<String, String> params = objectMapper.convertValue(userLimitRequest, HashMap.class);
-
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.set("x-session-token", userLimitRequest.getSessionToken());
-			HttpEntity<String> entity = new HttpEntity<String>(headers);
+			HttpEntity<UserLimitRequest> entity = new HttpEntity<UserLimitRequest>(userLimitRequest, headers);
 
 			ResponseEntity<?> responseEntity = null;
 			try {
-				responseEntity = utils.getRestTemplateResponse(userLimitUrl, "GET", entity, UserLimitResponse.class,
-						params);
+				responseEntity = utils.getRestTemplateResponse(userLimitUrl, "GET", entity, UserLimitResponse.class);
 				userLimitResponse = (UserLimitResponse) responseEntity.getBody();
 
 			} catch (RestClientResponseException e) {

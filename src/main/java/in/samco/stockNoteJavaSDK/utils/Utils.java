@@ -43,13 +43,13 @@ public class Utils {
 		return jsonObject.toString();
 	}
 
-	public ResponseEntity<?> getRestTemplateResponse(String url, String method, HttpEntity<String> entity,
-			Class<?> className, HashMap<String, String> params) {
+	public ResponseEntity<?> getRestTemplateResponse(String url, String method, HttpEntity<?> entity,
+			Class<?> className) {
 		setTimeout(restTemplate);
 		ResponseEntity<?> responseEntity = null;
 
 		if ("GET".equalsIgnoreCase(method)) {
-			responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, className, params);
+			responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, className);
 		} else if ("POST".equalsIgnoreCase(method)) {
 			responseEntity = restTemplate.postForEntity(url, entity, className);
 		}
