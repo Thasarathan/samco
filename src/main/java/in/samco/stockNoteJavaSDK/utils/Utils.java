@@ -1,7 +1,5 @@
 package in.samco.stockNoteJavaSDK.utils;
 
-import java.util.HashMap;
-
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;

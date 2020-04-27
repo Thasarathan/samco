@@ -15,6 +15,8 @@ public class BaseResponseEntity extends BaseResource {
 	@JsonIgnore
 	private String userId;
 
+	private String validationErrors[];
+
 	public String getRequestTime() {
 		return requestTime;
 	}
@@ -45,6 +47,14 @@ public class BaseResponseEntity extends BaseResource {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public String[] getValidationErrors() {
+		return validationErrors;
+	}
+
+	public void setValidationErrors(String[] validationErrors) {
+		this.validationErrors = validationErrors;
 	}
 
 	@Override

@@ -108,6 +108,10 @@ public class SamcoHttpConnection {
 		} catch (Exception e) {
 			log.error("Exception " + e);
 			log.error("Exception getMessage " + e.getMessage());
+			optionChainResponse = new OptionChainResponse();
+			optionChainResponse.setStatus("failure");
+			optionChainResponse.setStatusMessage(e.getMessage());
+			return optionChainResponse;
 		}
 
 		return optionChainResponse;
@@ -140,6 +144,10 @@ public class SamcoHttpConnection {
 		} catch (Exception e) {
 			log.error("Exception " + e);
 			log.error("Exception getMessage " + e.getMessage());
+			equitySearchResponse = new EquitySearchResponse();
+			equitySearchResponse.setStatus("failure");
+			equitySearchResponse.setStatusMessage(e.getMessage());
+			return equitySearchResponse;
 		}
 
 		return equitySearchResponse;
@@ -170,6 +178,10 @@ public class SamcoHttpConnection {
 		} catch (Exception e) {
 			log.error("Exception " + e);
 			log.error("Exception getMessage " + e.getMessage());
+			quoteResponse = new QuoteResponse();
+			quoteResponse.setStatus("failure");
+			quoteResponse.setStatusMessage(e.getMessage());
+			return quoteResponse;
 		}
 
 		return quoteResponse;
@@ -198,6 +210,10 @@ public class SamcoHttpConnection {
 		} catch (Exception e) {
 			log.error("Exception " + e);
 			log.error("Exception getMessage " + e.getMessage());
+			orderResponse = new OrderResponse();
+			orderResponse.setStatus("failure");
+			orderResponse.setStatusMessage(e.getMessage());
+			return orderResponse;
 		}
 
 		return orderResponse;
@@ -228,6 +244,10 @@ public class SamcoHttpConnection {
 		} catch (Exception e) {
 			log.error("Exception " + e);
 			log.error("Exception getMessage " + e.getMessage());
+			orderStatusResponse = new OrderStatusResponse();
+			orderStatusResponse.setOrderStatus("failure");
+			orderStatusResponse.setStatusMessage(e.getMessage());
+			return orderStatusResponse;
 		}
 
 		return orderStatusResponse;
@@ -256,6 +276,10 @@ public class SamcoHttpConnection {
 		} catch (Exception e) {
 			log.error("Exception " + e);
 			log.error("Exception getMessage " + e.getMessage());
+			userLimitResponse = new UserLimitResponse();
+			userLimitResponse.setStatus("failure");
+			userLimitResponse.setStatusMessage(e.getMessage());
+			return userLimitResponse;
 		}
 
 		return userLimitResponse;
