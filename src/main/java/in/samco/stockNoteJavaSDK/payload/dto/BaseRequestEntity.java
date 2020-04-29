@@ -2,18 +2,29 @@ package in.samco.stockNoteJavaSDK.payload.dto;
 
 import java.util.Objects;
 
+import javax.validation.constraints.NotBlank;
+
 public class BaseRequestEntity {
 
 	private String requestTime = String.valueOf(System.currentTimeMillis());
 	private String msgId;
 	private String userId;
+	private String sessionToken;
+
+	public BaseRequestEntity() {
+
+	}
+
+	public BaseRequestEntity(@NotBlank(message = "Session token is mandatory") String sessionToken) {
+		this.sessionToken = sessionToken;
+	}
 
 	public String getRequestTime() {
 		return requestTime;
 	}
 
-	public void setRequestTime(String serverTime) {
-		this.requestTime = serverTime;
+	public void setRequestTime(String requestTime) {
+		this.requestTime = requestTime;
 	}
 
 	public String getMsgId() {
@@ -30,6 +41,14 @@ public class BaseRequestEntity {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public String getSessionToken() {
+		return sessionToken;
+	}
+
+	public void setSessionToken(String sessionToken) {
+		this.sessionToken = sessionToken;
 	}
 
 	@Override

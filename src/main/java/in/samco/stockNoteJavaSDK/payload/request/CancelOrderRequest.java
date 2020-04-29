@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import in.samco.stockNoteJavaSDK.payload.dto.BaseRequestEntity;
 
-public class OrderStatusRequest extends BaseRequestEntity {
+public class CancelOrderRequest extends BaseRequestEntity {
 
 	private String orderNumber;
 
@@ -16,11 +16,11 @@ public class OrderStatusRequest extends BaseRequestEntity {
 		this.orderNumber = orderNumber;
 	}
 
-	public OrderStatusRequest() {
+	public CancelOrderRequest() {
 
 	}
 
-	public OrderStatusRequest(String sessionToken, String orderNumber) {
+	public CancelOrderRequest(String sessionToken, String orderNumber) {
 		super(sessionToken);
 		this.orderNumber = orderNumber;
 	}
@@ -31,7 +31,7 @@ public class OrderStatusRequest extends BaseRequestEntity {
 			return true;
 		if (o == null || getClass() != o.getClass())
 			return false;
-		OrderStatusRequest that = (OrderStatusRequest) o;
+		CancelOrderRequest that = (CancelOrderRequest) o;
 		return Objects.equals(orderNumber, that.orderNumber);
 	}
 
@@ -42,7 +42,7 @@ public class OrderStatusRequest extends BaseRequestEntity {
 
 	@Override
 	public String toString() {
-		return "OrderStatusRequest [orderNumber=" + orderNumber + "]";
+		return "CancelOrderRequest [orderNumber=" + orderNumber + "]";
 	}
 
 }

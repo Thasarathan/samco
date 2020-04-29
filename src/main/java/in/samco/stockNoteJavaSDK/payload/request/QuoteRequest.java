@@ -2,28 +2,22 @@ package in.samco.stockNoteJavaSDK.payload.request;
 
 import java.util.Objects;
 
-import javax.validation.constraints.NotBlank;
-
 import in.samco.stockNoteJavaSDK.payload.dto.BaseRequestEntity;
 
 public class QuoteRequest extends BaseRequestEntity {
 
-	@NotBlank(message = "Session token is mandatory.")
-	private String sessionToken;
-
-	@NotBlank(message = "Exchange is mandatory.")
 	private String exchange;
 
-	@NotBlank(message = "Search Symbol Name is mandatory")
 	private String searchSymbolName;
 
 	private String instrumentType;
 
-	public QuoteRequest(@NotBlank(message = "Session token is mandatory.") String sessionToken,
-			@NotBlank(message = "Exchange is mandatory.") String exchange,
-			@NotBlank(message = "Search Symbol Name is mandatory") String searchSymbolName) {
-		super();
-		this.sessionToken = sessionToken;
+	public QuoteRequest() {
+
+	}
+
+	public QuoteRequest(String sessionToken, String exchange, String searchSymbolName) {
+		super(sessionToken);
 		this.exchange = exchange;
 		this.searchSymbolName = searchSymbolName;
 	}
@@ -44,14 +38,6 @@ public class QuoteRequest extends BaseRequestEntity {
 		this.searchSymbolName = searchSymbolName;
 	}
 
-	public String getSessionToken() {
-		return sessionToken;
-	}
-
-	public void setSessionToken(String sessionToken) {
-		this.sessionToken = sessionToken;
-	}
-
 	public String getInstrumentType() {
 		return instrumentType;
 	}
@@ -67,19 +53,18 @@ public class QuoteRequest extends BaseRequestEntity {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		QuoteRequest that = (QuoteRequest) o;
-		return Objects.equals(exchange, that.exchange) && Objects.equals(sessionToken, that.sessionToken)
-				&& Objects.equals(searchSymbolName, that.searchSymbolName);
+		return Objects.equals(exchange, that.exchange) && Objects.equals(searchSymbolName, that.searchSymbolName);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(exchange, sessionToken, searchSymbolName);
+		return Objects.hash(exchange, searchSymbolName);
 	}
 
 	@Override
 	public String toString() {
-		return "EquitySearchRequest{" + "exchange='" + exchange + '\'' + ", sessionToken='" + sessionToken + '\''
-				+ ", searchString='" + searchSymbolName + '\'' + '}';
+		return "QuoteRequest [exchange=" + exchange + ", searchSymbolName=" + searchSymbolName + ", instrumentType="
+				+ instrumentType + "]";
 	}
 
 }

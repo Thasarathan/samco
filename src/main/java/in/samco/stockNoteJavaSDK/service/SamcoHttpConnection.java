@@ -13,13 +13,17 @@ import org.springframework.web.client.RestClientResponseException;
 
 import com.google.gson.Gson;
 
+import in.samco.stockNoteJavaSDK.payload.request.CancelOrderRequest;
 import in.samco.stockNoteJavaSDK.payload.request.EquitySearchRequest;
 import in.samco.stockNoteJavaSDK.payload.request.LoginRequest;
 import in.samco.stockNoteJavaSDK.payload.request.OptionChainRequest;
 import in.samco.stockNoteJavaSDK.payload.request.OrderRequest;
+import in.samco.stockNoteJavaSDK.payload.request.OrderRequestBO;
+import in.samco.stockNoteJavaSDK.payload.request.OrderRequestCO;
 import in.samco.stockNoteJavaSDK.payload.request.OrderStatusRequest;
 import in.samco.stockNoteJavaSDK.payload.request.QuoteRequest;
 import in.samco.stockNoteJavaSDK.payload.request.UserLimitRequest;
+import in.samco.stockNoteJavaSDK.payload.response.CancelOrderResponse;
 import in.samco.stockNoteJavaSDK.payload.response.EquitySearchResponse;
 import in.samco.stockNoteJavaSDK.payload.response.LoginResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OptionChainResponse;
@@ -57,6 +61,10 @@ public class SamcoHttpConnection {
 		} catch (Exception e) {
 			log.error("Exception " + e);
 			log.error("Exception getMessage " + e.getMessage());
+			loginResponse = new LoginResponse();
+			loginResponse.setStatus("failure");
+			loginResponse.setStatusMessage(e.getMessage());
+			return loginResponse;
 		}
 
 		return loginResponse;
@@ -283,6 +291,50 @@ public class SamcoHttpConnection {
 		}
 
 		return userLimitResponse;
+	}
+
+	public OrderResponse placeOrderCO(OrderRequestCO orderRequestCO) throws JSONException, IOException {
+		return placeOrder(orderRequestCO);
+	}
+
+	public OrderResponse placeOrderBO(OrderRequestBO orderRequestBO) throws JSONException, IOException {
+		return placeOrder(orderRequestBO);
+	}
+
+	public CancelOrderResponse cancelOrder(CancelOrderRequest cancelOrderRequest) throws JSONException, IOException {
+		CancelOrderResponse cancelOrderResponse = null;
+
+		try {
+			String cancelOrderUrl = routes.get("cancel.order").replace(":orderNumber",
+					"orderNumber=" + cancelOrderRequest.getOrderNumber());
+			log.info("cancelOrderRequest.getOrderNumber() " + cancelOrderRequest.getOrderNumber());
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("x-session-token", cancelOrderRequest.getSessionToken());
+			HttpEntity<CancelOrderRequest> entity = new HttpEntity<CancelOrderRequest>(cancelOrderRequest, headers);
+
+			ResponseEntity<?> responseEntity = null;
+			try {
+				responseEntity = utils.getRestTemplateResponse(cancelOrderUrl, "DELETE", entity, OrderResponse.class);
+				cancelOrderResponse = (CancelOrderResponse) responseEntity.getBody();
+				log.info("responseEntity.getBody() " + responseEntity.getBody());
+
+			} catch (RestClientResponseException e) {
+				cancelOrderResponse = gson.fromJson(e.getResponseBodyAsString(), CancelOrderResponse.class);
+				log.error("e.getResponseBodyAsString() " + e.getResponseBodyAsString());
+			}
+
+		} catch (Exception e) {
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
+			cancelOrderResponse = new CancelOrderResponse();
+			cancelOrderResponse.setStatus("failure");
+			cancelOrderResponse.setStatusMessage(e.getMessage());
+			return cancelOrderResponse;
+		}
+
+		return cancelOrderResponse;
 	}
 
 }

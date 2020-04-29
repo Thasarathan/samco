@@ -2,8 +2,6 @@ package in.samco.stockNoteJavaSDK.payload.request;
 
 import java.util.Objects;
 
-import javax.validation.constraints.NotBlank;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -12,29 +10,19 @@ import in.samco.stockNoteJavaSDK.payload.dto.BaseRequestEntity;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 public class OrderRequest extends BaseRequestEntity {
 
-	@JsonIgnore
-	@NotBlank(message = "Session Token is mandatory")
-	private String sessionToken;
-	@NotBlank(message = "Symbol Name is mandatory")
 	private String symbolName;
-	@NotBlank(message = "Exchange is mandatory")
 	private String exchange;
-	@NotBlank(message = " TransactionType is mandatory")
 	private String transactionType;
-	@NotBlank(message = "OrderType is mandatory")
 	private String orderType;
-	@NotBlank(message = "Quantity is mandatory ")
 	private String quantity;
 	private String disclosedQuantity;
 	private String price;
 	private String priceType;
 	private String marketProtection;
-	@NotBlank(message = "OrderValidity is mandatory")
 	private String orderValidity;
 	private String afterMarketOrderFlag;
 
 	// bracket Order
-	@NotBlank(message = "ProductType is mandatory")
 	private String productType;
 	private String squareOffValue;
 	private String stopLossValue;
@@ -167,14 +155,6 @@ public class OrderRequest extends BaseRequestEntity {
 		this.afterMarketOrderFlag = afterMarketOrderFlag;
 	}
 
-	public String getSessionToken() {
-		return sessionToken;
-	}
-
-	public void setSessionToken(String sessionToken) {
-		this.sessionToken = sessionToken;
-	}
-
 	public String getSymbolName() {
 		return symbolName;
 	}
@@ -198,11 +178,11 @@ public class OrderRequest extends BaseRequestEntity {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		OrderRequest that = (OrderRequest) o;
-		return Objects.equals(sessionToken, that.sessionToken) && Objects.equals(symbolName, that.symbolName)
-				&& Objects.equals(exchange, that.exchange) && Objects.equals(transactionType, that.transactionType)
-				&& Objects.equals(orderType, that.orderType) && Objects.equals(quantity, that.quantity)
-				&& Objects.equals(disclosedQuantity, that.disclosedQuantity) && Objects.equals(price, that.price)
-				&& Objects.equals(priceType, that.priceType) && Objects.equals(marketProtection, that.marketProtection)
+		return Objects.equals(symbolName, that.symbolName) && Objects.equals(exchange, that.exchange)
+				&& Objects.equals(transactionType, that.transactionType) && Objects.equals(orderType, that.orderType)
+				&& Objects.equals(quantity, that.quantity) && Objects.equals(disclosedQuantity, that.disclosedQuantity)
+				&& Objects.equals(price, that.price) && Objects.equals(priceType, that.priceType)
+				&& Objects.equals(marketProtection, that.marketProtection)
 				&& Objects.equals(orderValidity, that.orderValidity)
 				&& Objects.equals(afterMarketOrderFlag, that.afterMarketOrderFlag)
 				&& Objects.equals(productType, that.productType) && Objects.equals(squareOffValue, that.squareOffValue)
@@ -213,21 +193,21 @@ public class OrderRequest extends BaseRequestEntity {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(sessionToken, symbolName, exchange, transactionType, orderType, quantity, disclosedQuantity,
-				price, priceType, marketProtection, orderValidity, afterMarketOrderFlag, productType, squareOffValue,
+		return Objects.hash(symbolName, exchange, transactionType, orderType, quantity, disclosedQuantity, price,
+				priceType, marketProtection, orderValidity, afterMarketOrderFlag, productType, squareOffValue,
 				stopLossValue, valueType, trailingStopLoss, triggerPrice);
 	}
 
 	@Override
 	public String toString() {
-		return "OrderRequest [sessionToken=" + sessionToken + ", symbolName=" + symbolName + ", exchange=" + exchange
-				+ ", transactionType=" + transactionType + ", orderType=" + orderType + ", quantity=" + quantity
-				+ ", disclosedQuantity=" + disclosedQuantity + ", price=" + price + ", priceType=" + priceType
-				+ ", marketProtection=" + marketProtection + ", orderValidity=" + orderValidity
-				+ ", afterMarketOrderFlag=" + afterMarketOrderFlag + ", productType=" + productType
-				+ ", squareOffValue=" + squareOffValue + ", stopLossValue=" + stopLossValue + ", valueType=" + valueType
-				+ ", trailingStopLoss=" + trailingStopLoss + ", triggerPrice=" + triggerPrice + ", instrumentType="
-				+ instrumentType + ", userId=" + userId + "]";
+		return "OrderRequest [symbolName=" + symbolName + ", exchange=" + exchange + ", transactionType="
+				+ transactionType + ", orderType=" + orderType + ", quantity=" + quantity + ", disclosedQuantity="
+				+ disclosedQuantity + ", price=" + price + ", priceType=" + priceType + ", marketProtection="
+				+ marketProtection + ", orderValidity=" + orderValidity + ", afterMarketOrderFlag="
+				+ afterMarketOrderFlag + ", productType=" + productType + ", squareOffValue=" + squareOffValue
+				+ ", stopLossValue=" + stopLossValue + ", valueType=" + valueType + ", trailingStopLoss="
+				+ trailingStopLoss + ", triggerPrice=" + triggerPrice + ", instrumentType=" + instrumentType
+				+ ", userId=" + userId + "]";
 	}
 
 }

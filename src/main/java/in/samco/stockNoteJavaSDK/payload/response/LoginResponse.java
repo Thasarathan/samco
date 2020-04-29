@@ -41,6 +41,7 @@ public class LoginResponse extends BaseResponseEntity {
 	@JsonIgnore
 	private String passwordResetFlg;
 	private String status;
+	private String statusMessage;
 
 	public String getDefaultProductAlias() {
 		return defaultProductAlias;
@@ -144,6 +145,14 @@ public class LoginResponse extends BaseResponseEntity {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getStatusMessage() {
+		return statusMessage;
+	}
+
+	public void setStatusMessage(String statusMessage) {
+		this.statusMessage = statusMessage;
 	}
 
 	@Override

@@ -16,6 +16,7 @@ public class Routes {
 		routes.put("quote.search", "/quote/getQuote?:exchange:symbolName");
 		routes.put("place.order", "/order/placeOrder");
 		routes.put("order.status", "/order/getOrderStatus?:orderNumber");
+		routes.put("cancel.order", "/order/cancelOrder?:orderNumber");
 		routes.put("user.limit", "/limit/getLimits");
 
 	};

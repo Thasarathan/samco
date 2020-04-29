@@ -2,19 +2,12 @@ package in.samco.stockNoteJavaSDK.payload.request;
 
 import java.util.Objects;
 
-import javax.validation.constraints.NotBlank;
-
 import in.samco.stockNoteJavaSDK.payload.dto.BaseRequestEntity;
 
 public class OptionChainRequest extends BaseRequestEntity {
 
-	@NotBlank(message = "Session token is mandatory.")
-	private String sessionToken;
-
-	@NotBlank(message = "Exchange Name is mandatory")
 	private String exchange;
 
-	@NotBlank(message = "Search Symbol Name is mandatory")
 	private String searchSymbolName;
 
 	private String expiryDate;
@@ -23,25 +16,18 @@ public class OptionChainRequest extends BaseRequestEntity {
 
 	private String optionType;
 
-	public OptionChainRequest(@NotBlank(message = "Session token is mandatory.") String sessionToken,
-			@NotBlank(message = "Exchange Name is mandatory") String exchange,
-			@NotBlank(message = "Search Symbol Name is mandatory") String searchSymbolName, String expiryDate,
+	public OptionChainRequest() {
+
+	}
+
+	public OptionChainRequest(String sessionToken, String exchange, String searchSymbolName, String expiryDate,
 			String strikePrice, String optionType) {
-		super();
-		this.sessionToken = sessionToken;
+		super(sessionToken);
 		this.exchange = exchange;
 		this.searchSymbolName = searchSymbolName;
 		this.expiryDate = expiryDate;
 		this.strikePrice = strikePrice;
 		this.optionType = optionType;
-	}
-
-	public String getSessionToken() {
-		return sessionToken;
-	}
-
-	public void setSessionToken(String sessionToken) {
-		this.sessionToken = sessionToken;
 	}
 
 	public String getExchange() {
@@ -91,18 +77,18 @@ public class OptionChainRequest extends BaseRequestEntity {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		OptionChainRequest that = (OptionChainRequest) o;
-		return Objects.equals(exchange, that.exchange) && Objects.equals(sessionToken, that.sessionToken)
-				&& Objects.equals(searchSymbolName, that.searchSymbolName);
+		return Objects.equals(exchange, that.exchange) && Objects.equals(searchSymbolName, that.searchSymbolName);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(exchange, sessionToken, searchSymbolName);
+		return Objects.hash(exchange, searchSymbolName);
 	}
 
 	@Override
 	public String toString() {
-		return "EquitySearchRequest{" + "exchange='" + exchange + '\'' + ", sessionToken='" + sessionToken + '\''
-				+ ", searchString='" + searchSymbolName + '\'' + '}';
+		return "OptionChainRequest [exchange=" + exchange + ", searchSymbolName=" + searchSymbolName + ", expiryDate="
+				+ expiryDate + ", strikePrice=" + strikePrice + ", optionType=" + optionType + "]";
 	}
+
 }
