@@ -16,20 +16,24 @@ import com.google.gson.Gson;
 import in.samco.stockNoteJavaSDK.payload.request.CancelOrderRequest;
 import in.samco.stockNoteJavaSDK.payload.request.EquitySearchRequest;
 import in.samco.stockNoteJavaSDK.payload.request.LoginRequest;
+import in.samco.stockNoteJavaSDK.payload.request.ModifyOrderRequest;
 import in.samco.stockNoteJavaSDK.payload.request.OptionChainRequest;
 import in.samco.stockNoteJavaSDK.payload.request.OrderRequest;
 import in.samco.stockNoteJavaSDK.payload.request.OrderRequestBO;
 import in.samco.stockNoteJavaSDK.payload.request.OrderRequestCO;
 import in.samco.stockNoteJavaSDK.payload.request.OrderStatusRequest;
 import in.samco.stockNoteJavaSDK.payload.request.QuoteRequest;
-import in.samco.stockNoteJavaSDK.payload.request.UserLimitRequest;
+import in.samco.stockNoteJavaSDK.payload.request.TriggerOrderRequest;
+import in.samco.stockNoteJavaSDK.payload.request.UserRequest;
 import in.samco.stockNoteJavaSDK.payload.response.CancelOrderResponse;
 import in.samco.stockNoteJavaSDK.payload.response.EquitySearchResponse;
 import in.samco.stockNoteJavaSDK.payload.response.LoginResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OptionChainResponse;
+import in.samco.stockNoteJavaSDK.payload.response.OrderBookResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OrderResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OrderStatusResponse;
 import in.samco.stockNoteJavaSDK.payload.response.QuoteResponse;
+import in.samco.stockNoteJavaSDK.payload.response.TriggerOrdersResponse;
 import in.samco.stockNoteJavaSDK.payload.response.UserLimitResponse;
 import in.samco.stockNoteJavaSDK.utils.Utils;
 
@@ -261,7 +265,7 @@ public class SamcoHttpConnection {
 		return orderStatusResponse;
 	}
 
-	public UserLimitResponse getUserLimits(UserLimitRequest userLimitRequest) throws JSONException, IOException {
+	public UserLimitResponse getUserLimits(UserRequest userLimitRequest) throws JSONException, IOException {
 		UserLimitResponse userLimitResponse = null;
 
 		try {
@@ -270,7 +274,7 @@ public class SamcoHttpConnection {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.set("x-session-token", userLimitRequest.getSessionToken());
-			HttpEntity<UserLimitRequest> entity = new HttpEntity<UserLimitRequest>(userLimitRequest, headers);
+			HttpEntity<UserRequest> entity = new HttpEntity<UserRequest>(userLimitRequest, headers);
 
 			ResponseEntity<?> responseEntity = null;
 			try {
@@ -307,7 +311,6 @@ public class SamcoHttpConnection {
 		try {
 			String cancelOrderUrl = routes.get("cancel.order").replace(":orderNumber",
 					"orderNumber=" + cancelOrderRequest.getOrderNumber());
-			log.info("cancelOrderRequest.getOrderNumber() " + cancelOrderRequest.getOrderNumber());
 
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
@@ -318,11 +321,9 @@ public class SamcoHttpConnection {
 			try {
 				responseEntity = utils.getRestTemplateResponse(cancelOrderUrl, "DELETE", entity, OrderResponse.class);
 				cancelOrderResponse = (CancelOrderResponse) responseEntity.getBody();
-				log.info("responseEntity.getBody() " + responseEntity.getBody());
 
 			} catch (RestClientResponseException e) {
 				cancelOrderResponse = gson.fromJson(e.getResponseBodyAsString(), CancelOrderResponse.class);
-				log.error("e.getResponseBodyAsString() " + e.getResponseBodyAsString());
 			}
 
 		} catch (Exception e) {
@@ -335,6 +336,107 @@ public class SamcoHttpConnection {
 		}
 
 		return cancelOrderResponse;
+	}
+
+	public OrderResponse modifyOrder(ModifyOrderRequest modifyOrderRequest) throws JSONException, IOException {
+		OrderResponse modifyOrderResponse = null;
+
+		try {
+			String modifyOrderUrl = routes.get("modify.order").replace(":orderNumber",
+					modifyOrderRequest.getOrderNumber());
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("x-session-token", modifyOrderRequest.getSessionToken());
+			HttpEntity<ModifyOrderRequest> entity = new HttpEntity<ModifyOrderRequest>(modifyOrderRequest, headers);
+
+			ResponseEntity<?> responseEntity = null;
+			try {
+				responseEntity = utils.getRestTemplateResponse(modifyOrderUrl, "PUT", entity, OrderResponse.class);
+				modifyOrderResponse = (OrderResponse) responseEntity.getBody();
+
+			} catch (RestClientResponseException e) {
+				modifyOrderResponse = gson.fromJson(e.getResponseBodyAsString(), OrderResponse.class);
+			}
+
+		} catch (Exception e) {
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
+			modifyOrderResponse = new OrderResponse();
+			modifyOrderResponse.setStatus("failure");
+			modifyOrderResponse.setStatusMessage(e.getMessage());
+			return modifyOrderResponse;
+		}
+
+		return modifyOrderResponse;
+	}
+
+	public TriggerOrdersResponse getTriggerOrderNumbers(TriggerOrderRequest triggerOrderRequest)
+			throws JSONException, IOException {
+		TriggerOrdersResponse triggerOrdersResponse = null;
+
+		try {
+			String triggerOrderUrl = routes.get("trigger.order").replace(":orderNumber",
+					"orderNumber=" + triggerOrderRequest.getOrderNumber());
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("x-session-token", triggerOrderRequest.getSessionToken());
+			HttpEntity<TriggerOrderRequest> entity = new HttpEntity<TriggerOrderRequest>(triggerOrderRequest, headers);
+
+			ResponseEntity<?> responseEntity = null;
+			try {
+				responseEntity = utils.getRestTemplateResponse(triggerOrderUrl, "GET", entity,
+						TriggerOrdersResponse.class);
+				triggerOrdersResponse = (TriggerOrdersResponse) responseEntity.getBody();
+
+			} catch (RestClientResponseException e) {
+				triggerOrdersResponse = gson.fromJson(e.getResponseBodyAsString(), TriggerOrdersResponse.class);
+			}
+
+		} catch (Exception e) {
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
+			triggerOrdersResponse = new TriggerOrdersResponse();
+			triggerOrdersResponse.setStatus("failure");
+			triggerOrdersResponse.setStatusMessage(e.getMessage());
+			return triggerOrdersResponse;
+		}
+
+		return triggerOrdersResponse;
+	}
+
+	public OrderBookResponse getOrderBook(UserRequest userRequest) throws JSONException, IOException {
+		OrderBookResponse orderBookResponse = null;
+
+		try {
+			String equitySearchUrl = routes.get("order.book");
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("x-session-token", userRequest.getSessionToken());
+			HttpEntity<UserRequest> entity = new HttpEntity<UserRequest>(userRequest, headers);
+
+			ResponseEntity<?> responseEntity = null;
+			try {
+				responseEntity = utils.getRestTemplateResponse(equitySearchUrl, "GET", entity,
+						OrderBookResponse.class);
+				orderBookResponse = (OrderBookResponse) responseEntity.getBody();
+
+			} catch (RestClientResponseException e) {
+				orderBookResponse = gson.fromJson(e.getResponseBodyAsString(), OrderBookResponse.class);
+			}
+
+		} catch (Exception e) {
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
+			orderBookResponse = new OrderBookResponse();
+			orderBookResponse.setStatus("failure");
+			orderBookResponse.setStatusMessage(e.getMessage());
+			return orderBookResponse;
+		}
+
+		return orderBookResponse;
 	}
 
 }

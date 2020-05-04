@@ -50,7 +50,9 @@ public class Utils {
 			responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, className);
 		} else if ("POST".equalsIgnoreCase(method)) {
 			responseEntity = restTemplate.postForEntity(url, entity, className);
-		} else if("DELETE".equalsIgnoreCase(method)) {
+		} else if ("PUT".equalsIgnoreCase(method)) {
+			responseEntity = restTemplate.exchange(url, HttpMethod.PUT, entity, className);
+		} else if ("DELETE".equalsIgnoreCase(method)) {
 			responseEntity = restTemplate.exchange(url, HttpMethod.DELETE, entity, className);
 		}
 
