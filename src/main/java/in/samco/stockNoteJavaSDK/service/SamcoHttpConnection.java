@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 
 import in.samco.stockNoteJavaSDK.payload.request.CancelOrderRequest;
 import in.samco.stockNoteJavaSDK.payload.request.EquitySearchRequest;
+import in.samco.stockNoteJavaSDK.payload.request.ExitBORequest;
 import in.samco.stockNoteJavaSDK.payload.request.LoginRequest;
 import in.samco.stockNoteJavaSDK.payload.request.ModifyOrderRequest;
 import in.samco.stockNoteJavaSDK.payload.request.OptionChainRequest;
@@ -27,6 +28,7 @@ import in.samco.stockNoteJavaSDK.payload.request.TriggerOrderRequest;
 import in.samco.stockNoteJavaSDK.payload.request.UserRequest;
 import in.samco.stockNoteJavaSDK.payload.response.CancelOrderResponse;
 import in.samco.stockNoteJavaSDK.payload.response.EquitySearchResponse;
+import in.samco.stockNoteJavaSDK.payload.response.ExitBOResponse;
 import in.samco.stockNoteJavaSDK.payload.response.LoginResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OptionChainResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OrderBookResponse;
@@ -319,7 +321,8 @@ public class SamcoHttpConnection {
 
 			ResponseEntity<?> responseEntity = null;
 			try {
-				responseEntity = utils.getRestTemplateResponse(cancelOrderUrl, "DELETE", entity, OrderResponse.class);
+				responseEntity = utils.getRestTemplateResponse(cancelOrderUrl, "DELETE", entity,
+						CancelOrderResponse.class);
 				cancelOrderResponse = (CancelOrderResponse) responseEntity.getBody();
 
 			} catch (RestClientResponseException e) {
@@ -419,8 +422,7 @@ public class SamcoHttpConnection {
 
 			ResponseEntity<?> responseEntity = null;
 			try {
-				responseEntity = utils.getRestTemplateResponse(equitySearchUrl, "GET", entity,
-						OrderBookResponse.class);
+				responseEntity = utils.getRestTemplateResponse(equitySearchUrl, "GET", entity, OrderBookResponse.class);
 				orderBookResponse = (OrderBookResponse) responseEntity.getBody();
 
 			} catch (RestClientResponseException e) {
@@ -437,6 +439,74 @@ public class SamcoHttpConnection {
 		}
 
 		return orderBookResponse;
+	}
+
+	public CancelOrderResponse cancelOrderCO(CancelOrderRequest cancelOrderRequest) throws JSONException, IOException {
+		CancelOrderResponse cancelOrderResponse = null;
+
+		try {
+			String cancelOrderCOUrl = routes.get("exit.co").replace(":orderNumber",
+					"orderNumber=" + cancelOrderRequest.getOrderNumber());
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("x-session-token", cancelOrderRequest.getSessionToken());
+			HttpEntity<CancelOrderRequest> entity = new HttpEntity<CancelOrderRequest>(cancelOrderRequest, headers);
+
+			ResponseEntity<?> responseEntity = null;
+			try {
+				responseEntity = utils.getRestTemplateResponse(cancelOrderCOUrl, "DELETE", entity,
+						CancelOrderResponse.class);
+				cancelOrderResponse = (CancelOrderResponse) responseEntity.getBody();
+
+			} catch (RestClientResponseException e) {
+				cancelOrderResponse = gson.fromJson(e.getResponseBodyAsString(), CancelOrderResponse.class);
+			}
+
+		} catch (Exception e) {
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
+			cancelOrderResponse = new CancelOrderResponse();
+			cancelOrderResponse.setStatus("failure");
+			cancelOrderResponse.setStatusMessage(e.getMessage());
+			return cancelOrderResponse;
+		}
+
+		return cancelOrderResponse;
+	}
+
+	public ExitBOResponse cancelOrderBO(ExitBORequest exitBORequest) throws JSONException, IOException {
+		ExitBOResponse exitBOResponse = null;
+
+		try {
+			String cancelOrderCOUrl = routes.get("exit.bo").replace(":orderNumber",
+					"orderNumber=" + exitBORequest.getOrderNumber());
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("x-session-token", exitBORequest.getSessionToken());
+			HttpEntity<ExitBORequest> entity = new HttpEntity<ExitBORequest>(exitBORequest, headers);
+
+			ResponseEntity<?> responseEntity = null;
+			try {
+				responseEntity = utils.getRestTemplateResponse(cancelOrderCOUrl, "DELETE", entity,
+						ExitBOResponse.class);
+				exitBOResponse = (ExitBOResponse) responseEntity.getBody();
+
+			} catch (RestClientResponseException e) {
+				exitBOResponse = gson.fromJson(e.getResponseBodyAsString(), ExitBOResponse.class);
+			}
+
+		} catch (Exception e) {
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
+			exitBOResponse = new ExitBOResponse();
+			exitBOResponse.setStatus("failure");
+			exitBOResponse.setStatusMessage(e.getMessage());
+			return exitBOResponse;
+		}
+
+		return exitBOResponse;
 	}
 
 }

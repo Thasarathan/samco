@@ -21,6 +21,8 @@ public class Routes {
 		routes.put("user.limit", "/limit/getLimits");
 		routes.put("trigger.order", "/order/getTriggerOrders?:orderNumber");
 		routes.put("order.book", "/order/orderBook");
+		routes.put("exit.co", "/order/exitCO?:orderNumber");
+		routes.put("exit.bo", "/order/exitBO?:orderNumber");
 
 	};
 
