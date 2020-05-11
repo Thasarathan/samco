@@ -3,13 +3,17 @@ package in.samco.stockNoteJavaSDK.service;
 import java.util.HashMap;
 
 public class Routes {
+	public String environment ;
 
 	public HashMap<String, String> routes;
-	public static final String baseUrl = "http://localhost:9092/tradeapi";
+//	public static final String baseUrl = "http://localhost:9092/tradeapi";
 
 	public Routes() {
 
 		routes = new HashMap<String, String>();
+		routes.put("local", "http://localhost:9092/tradeapi");
+		routes.put("production", "http://api.stocknote.com");
+		
 		routes.put("login", "/login");
 		routes.put("option.chain", "/option/optionChain?:exchange:searchSymbolName:expiryDate:strikePrice:optionType");
 		routes.put("equity.search", "/eqDervSearch/search?:exchange:searchSymbolName");
@@ -23,11 +27,15 @@ public class Routes {
 		routes.put("order.book", "/order/orderBook");
 		routes.put("exit.co", "/order/exitCO?:orderNumber");
 		routes.put("exit.bo", "/order/exitBO?:orderNumber");
+		routes.put("trade.book", "/trade/tradeBook");
+		routes.put("holding", "/holding/getHoldings");
+		routes.put("position", "/position/getPositions?:positionType");
 
 	};
 
 	public String get(String key) {
-		return baseUrl + routes.get(key);
+		System.out.println("environment **********      "+ routes.get(environment).toLowerCase() + routes.get(key));
+		return routes.get(environment).toLowerCase() + routes.get(key);
 	}
 
 }

@@ -2,8 +2,6 @@ package in.samco.stockNoteJavaSDK.payload.dto;
 
 import java.util.Objects;
 
-import javax.validation.constraints.NotBlank;
-
 public class BaseRequestEntity {
 
 	private String requestTime = String.valueOf(System.currentTimeMillis());
@@ -15,7 +13,7 @@ public class BaseRequestEntity {
 
 	}
 
-	public BaseRequestEntity(@NotBlank(message = "Session token is mandatory") String sessionToken) {
+	public BaseRequestEntity(String sessionToken) {
 		this.sessionToken = sessionToken;
 	}
 

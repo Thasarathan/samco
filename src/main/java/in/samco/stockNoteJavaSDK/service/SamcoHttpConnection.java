@@ -23,18 +23,22 @@ import in.samco.stockNoteJavaSDK.payload.request.OrderRequest;
 import in.samco.stockNoteJavaSDK.payload.request.OrderRequestBO;
 import in.samco.stockNoteJavaSDK.payload.request.OrderRequestCO;
 import in.samco.stockNoteJavaSDK.payload.request.OrderStatusRequest;
+import in.samco.stockNoteJavaSDK.payload.request.PositionRequest;
 import in.samco.stockNoteJavaSDK.payload.request.QuoteRequest;
 import in.samco.stockNoteJavaSDK.payload.request.TriggerOrderRequest;
 import in.samco.stockNoteJavaSDK.payload.request.UserRequest;
 import in.samco.stockNoteJavaSDK.payload.response.CancelOrderResponse;
 import in.samco.stockNoteJavaSDK.payload.response.EquitySearchResponse;
 import in.samco.stockNoteJavaSDK.payload.response.ExitBOResponse;
+import in.samco.stockNoteJavaSDK.payload.response.HoldingResponse;
 import in.samco.stockNoteJavaSDK.payload.response.LoginResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OptionChainResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OrderBookResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OrderResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OrderStatusResponse;
+import in.samco.stockNoteJavaSDK.payload.response.PositionResponse;
 import in.samco.stockNoteJavaSDK.payload.response.QuoteResponse;
+import in.samco.stockNoteJavaSDK.payload.response.TradeBookResponse;
 import in.samco.stockNoteJavaSDK.payload.response.TriggerOrdersResponse;
 import in.samco.stockNoteJavaSDK.payload.response.UserLimitResponse;
 import in.samco.stockNoteJavaSDK.utils.Utils;
@@ -45,6 +49,16 @@ public class SamcoHttpConnection {
 	private static final Routes routes = new Routes();
 	private static final Utils utils = new Utils();
 	private static final Gson gson = new Gson();
+
+	public SamcoHttpConnection() {
+
+	}
+
+	public SamcoHttpConnection(String environment, int connTimeOut, int readTimeOut) {
+		routes.environment = environment;
+		utils.connTimeOut = connTimeOut;
+		utils.readTimeOut = readTimeOut;
+	}
 
 	public LoginResponse getLoginSession(LoginRequest loginRequest) {
 		LoginResponse loginResponse = null;
@@ -507,6 +521,104 @@ public class SamcoHttpConnection {
 		}
 
 		return exitBOResponse;
+	}
+
+	public TradeBookResponse getTradeBook(UserRequest userRequest) throws JSONException, IOException {
+		TradeBookResponse tradeBookResponse = null;
+
+		try {
+			String tradeBookUrl = routes.get("trade.book");
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("x-session-token", userRequest.getSessionToken());
+			HttpEntity<UserRequest> entity = new HttpEntity<UserRequest>(userRequest, headers);
+
+			ResponseEntity<?> responseEntity = null;
+			try {
+				responseEntity = utils.getRestTemplateResponse(tradeBookUrl, "GET", entity, TradeBookResponse.class);
+				tradeBookResponse = (TradeBookResponse) responseEntity.getBody();
+
+			} catch (RestClientResponseException e) {
+				tradeBookResponse = gson.fromJson(e.getResponseBodyAsString(), TradeBookResponse.class);
+			}
+
+		} catch (Exception e) {
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
+			tradeBookResponse = new TradeBookResponse();
+			tradeBookResponse.setStatus("failure");
+			tradeBookResponse.setStatusMessage(e.getMessage());
+			return tradeBookResponse;
+		}
+
+		return tradeBookResponse;
+	}
+
+	public HoldingResponse getHolding(UserRequest userRequest) throws JSONException, IOException {
+		HoldingResponse holdingResponse = null;
+
+		try {
+			String tradeBookUrl = routes.get("holding");
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("x-session-token", userRequest.getSessionToken());
+			HttpEntity<UserRequest> entity = new HttpEntity<UserRequest>(userRequest, headers);
+
+			ResponseEntity<?> responseEntity = null;
+			try {
+				responseEntity = utils.getRestTemplateResponse(tradeBookUrl, "GET", entity, HoldingResponse.class);
+				holdingResponse = (HoldingResponse) responseEntity.getBody();
+
+			} catch (RestClientResponseException e) {
+				holdingResponse = gson.fromJson(e.getResponseBodyAsString(), HoldingResponse.class);
+			}
+
+		} catch (Exception e) {
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
+			holdingResponse = new HoldingResponse();
+			holdingResponse.setStatus("failure");
+			holdingResponse.setStatusMessage(e.getMessage());
+			return holdingResponse;
+		}
+
+		return holdingResponse;
+	}
+
+	public PositionResponse getPositions(PositionRequest positionRequest) throws JSONException, IOException {
+		PositionResponse positionResponse = null;
+
+		try {
+			String positionUrl = routes.get("position").replace(":positionType",
+					"positionType=" + positionRequest.getPositionType());
+			;
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("x-session-token", positionRequest.getSessionToken());
+			HttpEntity<UserRequest> entity = new HttpEntity<UserRequest>(positionRequest, headers);
+
+			ResponseEntity<?> responseEntity = null;
+			try {
+				responseEntity = utils.getRestTemplateResponse(positionUrl, "GET", entity, PositionResponse.class);
+				positionResponse = (PositionResponse) responseEntity.getBody();
+
+			} catch (RestClientResponseException e) {
+				positionResponse = gson.fromJson(e.getResponseBodyAsString(), PositionResponse.class);
+			}
+
+		} catch (Exception e) {
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
+			positionResponse = new PositionResponse();
+			positionResponse.setStatus("failure");
+			positionResponse.setStatusMessage(e.getMessage());
+			return positionResponse;
+		}
+
+		return positionResponse;
 	}
 
 }
