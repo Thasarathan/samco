@@ -30,6 +30,9 @@ public class Routes {
 		routes.put("trade.book", "/trade/tradeBook");
 		routes.put("holding", "/holding/getHoldings");
 		routes.put("position", "/position/getPositions?:positionType");
+		routes.put("convert.position", "/position/convertPosition");
+		routes.put("history.candleData", "/history/candleData?:exchange:symbolName:fromDate:toDate");
+		routes.put("history.indexCandleData", "/history/indexCandleData?:indexName:fromDate:toDate");
 
 	};
 

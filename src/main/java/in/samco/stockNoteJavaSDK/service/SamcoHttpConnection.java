@@ -16,6 +16,8 @@ import com.google.gson.Gson;
 import in.samco.stockNoteJavaSDK.payload.request.CancelOrderRequest;
 import in.samco.stockNoteJavaSDK.payload.request.EquitySearchRequest;
 import in.samco.stockNoteJavaSDK.payload.request.ExitBORequest;
+import in.samco.stockNoteJavaSDK.payload.request.HistoricalCandleRequest;
+import in.samco.stockNoteJavaSDK.payload.request.IndexCandleDataRequest;
 import in.samco.stockNoteJavaSDK.payload.request.LoginRequest;
 import in.samco.stockNoteJavaSDK.payload.request.ModifyOrderRequest;
 import in.samco.stockNoteJavaSDK.payload.request.OptionChainRequest;
@@ -23,6 +25,7 @@ import in.samco.stockNoteJavaSDK.payload.request.OrderRequest;
 import in.samco.stockNoteJavaSDK.payload.request.OrderRequestBO;
 import in.samco.stockNoteJavaSDK.payload.request.OrderRequestCO;
 import in.samco.stockNoteJavaSDK.payload.request.OrderStatusRequest;
+import in.samco.stockNoteJavaSDK.payload.request.PositionConversionRequest;
 import in.samco.stockNoteJavaSDK.payload.request.PositionRequest;
 import in.samco.stockNoteJavaSDK.payload.request.QuoteRequest;
 import in.samco.stockNoteJavaSDK.payload.request.TriggerOrderRequest;
@@ -30,12 +33,15 @@ import in.samco.stockNoteJavaSDK.payload.request.UserRequest;
 import in.samco.stockNoteJavaSDK.payload.response.CancelOrderResponse;
 import in.samco.stockNoteJavaSDK.payload.response.EquitySearchResponse;
 import in.samco.stockNoteJavaSDK.payload.response.ExitBOResponse;
+import in.samco.stockNoteJavaSDK.payload.response.HistoricalCandleResponse;
 import in.samco.stockNoteJavaSDK.payload.response.HoldingResponse;
+import in.samco.stockNoteJavaSDK.payload.response.IndexCandleDataResponse;
 import in.samco.stockNoteJavaSDK.payload.response.LoginResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OptionChainResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OrderBookResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OrderResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OrderStatusResponse;
+import in.samco.stockNoteJavaSDK.payload.response.PositionConversionResponse;
 import in.samco.stockNoteJavaSDK.payload.response.PositionResponse;
 import in.samco.stockNoteJavaSDK.payload.response.QuoteResponse;
 import in.samco.stockNoteJavaSDK.payload.response.TradeBookResponse;
@@ -619,6 +625,119 @@ public class SamcoHttpConnection {
 		}
 
 		return positionResponse;
+	}
+
+	public PositionConversionResponse convertPosition(PositionConversionRequest positionConversionRequest)
+			throws JSONException, IOException {
+		PositionConversionResponse positionConversionResponse = null;
+
+		try {
+			String convertPositionUrl = routes.get("convert.position");
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("x-session-token", positionConversionRequest.getSessionToken());
+			HttpEntity<PositionConversionRequest> entity = new HttpEntity<PositionConversionRequest>(
+					positionConversionRequest, headers);
+
+			ResponseEntity<?> responseEntity = null;
+			try {
+				responseEntity = utils.getRestTemplateResponse(convertPositionUrl, "POST", entity,
+						PositionConversionResponse.class);
+				positionConversionResponse = (PositionConversionResponse) responseEntity.getBody();
+
+			} catch (RestClientResponseException e) {
+				positionConversionResponse = gson.fromJson(e.getResponseBodyAsString(),
+						PositionConversionResponse.class);
+			}
+
+		} catch (Exception e) {
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
+			positionConversionResponse = new PositionConversionResponse();
+			positionConversionResponse.setStatus("failure");
+			positionConversionResponse.setStatusMsg(e.getMessage());
+			return positionConversionResponse;
+		}
+
+		return positionConversionResponse;
+	}
+
+	public HistoricalCandleResponse getHistoricalCandleData(HistoricalCandleRequest historicalCandleRequest)
+			throws JSONException, IOException {
+		HistoricalCandleResponse historicalCandleResponse = null;
+
+		try {
+			String historicalCandleDataUrl = routes.get("history.candleData")
+					.replace(":exchange", "exchange=" + historicalCandleRequest.getExchange())
+					.replace(":symbolName", "&symbolName=" + historicalCandleRequest.getSymbolName())
+					.replace(":fromDate", "&fromDate=" + historicalCandleRequest.getFromDate())
+					.replace(":toDate", "&toDate=" + historicalCandleRequest.getToDate());
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("x-session-token", historicalCandleRequest.getSessionToken());
+			HttpEntity<HistoricalCandleRequest> entity = new HttpEntity<HistoricalCandleRequest>(
+					historicalCandleRequest, headers);
+
+			ResponseEntity<?> responseEntity = null;
+			try {
+				responseEntity = utils.getRestTemplateResponse(historicalCandleDataUrl, "GET", entity,
+						HistoricalCandleResponse.class);
+				historicalCandleResponse = (HistoricalCandleResponse) responseEntity.getBody();
+
+			} catch (RestClientResponseException e) {
+				historicalCandleResponse = gson.fromJson(e.getResponseBodyAsString(), HistoricalCandleResponse.class);
+			}
+
+		} catch (Exception e) {
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
+			historicalCandleResponse = new HistoricalCandleResponse();
+			historicalCandleResponse.setStatus("failure");
+			historicalCandleResponse.setStatusMessage(e.getMessage());
+			return historicalCandleResponse;
+		}
+
+		return historicalCandleResponse;
+	}
+
+	public IndexCandleDataResponse getIndexCandleData(IndexCandleDataRequest indexCandleDataRequest)
+			throws JSONException, IOException {
+		IndexCandleDataResponse indexCandleDataResponse = null;
+
+		try {
+			String historicalCandleDataUrl = routes.get("history.indexCandleData")
+					.replace(":indexName", "indexName=" + indexCandleDataRequest.getIndexName())
+					.replace(":fromDate", "&fromDate=" + indexCandleDataRequest.getFromDate())
+					.replace(":toDate", "&toDate=" + indexCandleDataRequest.getToDate());
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("x-session-token", indexCandleDataRequest.getSessionToken());
+			HttpEntity<IndexCandleDataRequest> entity = new HttpEntity<IndexCandleDataRequest>(indexCandleDataRequest,
+					headers);
+
+			ResponseEntity<?> responseEntity = null;
+			try {
+				responseEntity = utils.getRestTemplateResponse(historicalCandleDataUrl, "GET", entity,
+						IndexCandleDataResponse.class);
+				indexCandleDataResponse = (IndexCandleDataResponse) responseEntity.getBody();
+
+			} catch (RestClientResponseException e) {
+				indexCandleDataResponse = gson.fromJson(e.getResponseBodyAsString(), IndexCandleDataResponse.class);
+			}
+
+		} catch (Exception e) {
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
+			indexCandleDataResponse = new IndexCandleDataResponse();
+			indexCandleDataResponse.setStatus("failure");
+			indexCandleDataResponse.setStatusMessage(e.getMessage());
+			return indexCandleDataResponse;
+		}
+
+		return indexCandleDataResponse;
 	}
 
 }
