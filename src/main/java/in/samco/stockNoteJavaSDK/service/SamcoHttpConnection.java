@@ -14,9 +14,9 @@ import org.springframework.web.client.RestClientResponseException;
 import com.google.gson.Gson;
 
 import in.samco.stockNoteJavaSDK.payload.request.CancelOrderRequest;
+import in.samco.stockNoteJavaSDK.payload.request.CandleDataRequest;
 import in.samco.stockNoteJavaSDK.payload.request.EquitySearchRequest;
 import in.samco.stockNoteJavaSDK.payload.request.ExitBORequest;
-import in.samco.stockNoteJavaSDK.payload.request.HistoricalCandleRequest;
 import in.samco.stockNoteJavaSDK.payload.request.IndexCandleDataRequest;
 import in.samco.stockNoteJavaSDK.payload.request.LoginRequest;
 import in.samco.stockNoteJavaSDK.payload.request.ModifyOrderRequest;
@@ -36,6 +36,8 @@ import in.samco.stockNoteJavaSDK.payload.response.ExitBOResponse;
 import in.samco.stockNoteJavaSDK.payload.response.HistoricalCandleResponse;
 import in.samco.stockNoteJavaSDK.payload.response.HoldingResponse;
 import in.samco.stockNoteJavaSDK.payload.response.IndexCandleDataResponse;
+import in.samco.stockNoteJavaSDK.payload.response.IndexIntraDayCandleDataResponse;
+import in.samco.stockNoteJavaSDK.payload.response.IntradayCandleResponse;
 import in.samco.stockNoteJavaSDK.payload.response.LoginResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OptionChainResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OrderBookResponse;
@@ -663,22 +665,21 @@ public class SamcoHttpConnection {
 		return positionConversionResponse;
 	}
 
-	public HistoricalCandleResponse getHistoricalCandleData(HistoricalCandleRequest historicalCandleRequest)
+	public HistoricalCandleResponse getHistoricalCandleData(CandleDataRequest candleDataRequest)
 			throws JSONException, IOException {
 		HistoricalCandleResponse historicalCandleResponse = null;
 
 		try {
 			String historicalCandleDataUrl = routes.get("history.candleData")
-					.replace(":exchange", "exchange=" + historicalCandleRequest.getExchange())
-					.replace(":symbolName", "&symbolName=" + historicalCandleRequest.getSymbolName())
-					.replace(":fromDate", "&fromDate=" + historicalCandleRequest.getFromDate())
-					.replace(":toDate", "&toDate=" + historicalCandleRequest.getToDate());
+					.replace(":exchange", "exchange=" + candleDataRequest.getExchange())
+					.replace(":symbolName", "&symbolName=" + candleDataRequest.getSymbolName())
+					.replace(":fromDate", "&fromDate=" + candleDataRequest.getFromDate())
+					.replace(":toDate", "&toDate=" + candleDataRequest.getToDate());
 
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.set("x-session-token", historicalCandleRequest.getSessionToken());
-			HttpEntity<HistoricalCandleRequest> entity = new HttpEntity<HistoricalCandleRequest>(
-					historicalCandleRequest, headers);
+			headers.set("x-session-token", candleDataRequest.getSessionToken());
+			HttpEntity<CandleDataRequest> entity = new HttpEntity<CandleDataRequest>(candleDataRequest, headers);
 
 			ResponseEntity<?> responseEntity = null;
 			try {
@@ -738,6 +739,83 @@ public class SamcoHttpConnection {
 		}
 
 		return indexCandleDataResponse;
+	}
+
+	public IntradayCandleResponse getIntradayCandleData(CandleDataRequest candleDataRequest)
+			throws JSONException, IOException {
+		IntradayCandleResponse intradayCandleResponse = null;
+
+		try {
+			String historicalCandleDataUrl = routes.get("intraday.candleData")
+					.replace(":exchange", "exchange=" + candleDataRequest.getExchange())
+					.replace(":symbolName", "&symbolName=" + candleDataRequest.getSymbolName())
+					.replace(":fromDate", "&fromDate=" + candleDataRequest.getFromDate())
+					.replace(":toDate", "&toDate=" + candleDataRequest.getToDate());
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("x-session-token", candleDataRequest.getSessionToken());
+			HttpEntity<CandleDataRequest> entity = new HttpEntity<CandleDataRequest>(candleDataRequest, headers);
+
+			ResponseEntity<?> responseEntity = null;
+			try {
+				responseEntity = utils.getRestTemplateResponse(historicalCandleDataUrl, "GET", entity,
+						IntradayCandleResponse.class);
+				intradayCandleResponse = (IntradayCandleResponse) responseEntity.getBody();
+
+			} catch (RestClientResponseException e) {
+				intradayCandleResponse = gson.fromJson(e.getResponseBodyAsString(), IntradayCandleResponse.class);
+			}
+
+		} catch (Exception e) {
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
+			intradayCandleResponse = new IntradayCandleResponse();
+			intradayCandleResponse.setStatus("failure");
+			intradayCandleResponse.setStatusMessage(e.getMessage());
+			return intradayCandleResponse;
+		}
+
+		return intradayCandleResponse;
+	}
+
+	public IndexIntraDayCandleDataResponse getIndexIntradayCandleData(IndexCandleDataRequest indexCandleDataRequest)
+			throws JSONException, IOException {
+		IndexIntraDayCandleDataResponse indexIntraDayCandleDataResponse = null;
+
+		try {
+			String historicalCandleDataUrl = routes.get("intraday.indexCandleData")
+					.replace(":indexName", "indexName=" + indexCandleDataRequest.getIndexName())
+					.replace(":fromDate", "&fromDate=" + indexCandleDataRequest.getFromDate())
+					.replace(":toDate", "&toDate=" + indexCandleDataRequest.getToDate());
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("x-session-token", indexCandleDataRequest.getSessionToken());
+			HttpEntity<IndexCandleDataRequest> entity = new HttpEntity<IndexCandleDataRequest>(indexCandleDataRequest,
+					headers);
+
+			ResponseEntity<?> responseEntity = null;
+			try {
+				responseEntity = utils.getRestTemplateResponse(historicalCandleDataUrl, "GET", entity,
+						IndexIntraDayCandleDataResponse.class);
+				indexIntraDayCandleDataResponse = (IndexIntraDayCandleDataResponse) responseEntity.getBody();
+
+			} catch (RestClientResponseException e) {
+				indexIntraDayCandleDataResponse = gson.fromJson(e.getResponseBodyAsString(),
+						IndexIntraDayCandleDataResponse.class);
+			}
+
+		} catch (Exception e) {
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
+			indexIntraDayCandleDataResponse = new IndexIntraDayCandleDataResponse();
+			indexIntraDayCandleDataResponse.setStatus("failure");
+			indexIntraDayCandleDataResponse.setStatusMessage(e.getMessage());
+			return indexIntraDayCandleDataResponse;
+		}
+
+		return indexIntraDayCandleDataResponse;
 	}
 
 }

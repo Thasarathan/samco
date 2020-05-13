@@ -2,7 +2,7 @@ package in.samco.stockNoteJavaSDK.payload.request;
 
 import in.samco.stockNoteJavaSDK.payload.dto.BaseRequestEntity;
 
-public class HistoricalCandleRequest extends BaseRequestEntity {
+public class CandleDataRequest extends BaseRequestEntity {
 
 	private String exchange;
 
@@ -12,12 +12,11 @@ public class HistoricalCandleRequest extends BaseRequestEntity {
 
 	private String toDate;
 
-	public HistoricalCandleRequest() {
+	public CandleDataRequest() {
 
 	}
 
-	public HistoricalCandleRequest(String sessionToken, String exchange, String symbolName, String fromDate,
-			String toDate) {
+	public CandleDataRequest(String sessionToken, String exchange, String symbolName, String fromDate, String toDate) {
 		super(sessionToken);
 		this.exchange = exchange;
 		this.symbolName = symbolName;

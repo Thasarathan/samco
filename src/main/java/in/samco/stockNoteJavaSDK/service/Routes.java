@@ -33,6 +33,8 @@ public class Routes {
 		routes.put("convert.position", "/position/convertPosition");
 		routes.put("history.candleData", "/history/candleData?:exchange:symbolName:fromDate:toDate");
 		routes.put("history.indexCandleData", "/history/indexCandleData?:indexName:fromDate:toDate");
+		routes.put("intraday.candleData", "/intraday/candleData?:exchange:symbolName:fromDate:toDate");
+		routes.put("intraday.indexCandleData", "/intraday/indexCandleData?:indexName:fromDate:toDate");
 
 	};
 
