@@ -39,6 +39,7 @@ import in.samco.stockNoteJavaSDK.payload.response.IndexCandleDataResponse;
 import in.samco.stockNoteJavaSDK.payload.response.IndexIntraDayCandleDataResponse;
 import in.samco.stockNoteJavaSDK.payload.response.IntradayCandleResponse;
 import in.samco.stockNoteJavaSDK.payload.response.LoginResponse;
+import in.samco.stockNoteJavaSDK.payload.response.LogoutResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OptionChainResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OrderBookResponse;
 import in.samco.stockNoteJavaSDK.payload.response.OrderResponse;
@@ -816,6 +817,40 @@ public class SamcoHttpConnection {
 		}
 
 		return indexIntraDayCandleDataResponse;
+	}
+
+	public LogoutResponse Logout(UserRequest userRequest) throws JSONException, IOException {
+		LogoutResponse logoutResponse = null;
+
+		try {
+			String logoutUrl = routes.get("logout");
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("x-session-token", userRequest.getSessionToken());
+			HttpEntity<UserRequest> entity = new HttpEntity<UserRequest>(userRequest, headers);
+
+			ResponseEntity<?> responseEntity = null;
+			try {
+				responseEntity = utils.getRestTemplateResponse(logoutUrl, "DELETE", entity, LogoutResponse.class);
+				log.info("responseEntity.getBody() *********** "+responseEntity.getBody());
+				logoutResponse = (LogoutResponse) responseEntity.getBody();
+
+			} catch (RestClientResponseException e) {
+				log.error("e.getResponseBodyAsString() ************    "+e.getResponseBodyAsString());
+				logoutResponse = gson.fromJson(e.getResponseBodyAsString(), LogoutResponse.class);
+			}
+
+		} catch (Exception e) {
+			log.error("Exception " + e);
+			log.error("Exception getMessage " + e.getMessage());
+			logoutResponse = new LogoutResponse();
+			logoutResponse.setStatus("failure");
+			logoutResponse.setStatusMessage(e.getMessage());
+			return logoutResponse;
+		}
+
+		return logoutResponse;
 	}
 
 }

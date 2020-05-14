@@ -35,6 +35,7 @@ public class Routes {
 		routes.put("history.indexCandleData", "/history/indexCandleData?:indexName:fromDate:toDate");
 		routes.put("intraday.candleData", "/intraday/candleData?:exchange:symbolName:fromDate:toDate");
 		routes.put("intraday.indexCandleData", "/intraday/indexCandleData?:indexName:fromDate:toDate");
+		routes.put("logout", "/logout");
 
 	};
 
