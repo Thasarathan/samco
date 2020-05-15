@@ -60,13 +60,18 @@ public class SamcoHttpConnection {
 	private static final Gson gson = new Gson();
 
 	public SamcoHttpConnection() {
-
+		routes.environment = "production";
+		utils.connTimeOut = "60000";
+		utils.readTimeOut = "240000";
 	}
 
-	public SamcoHttpConnection(String environment, int connTimeOut, int readTimeOut) {
+	public SamcoHttpConnection(String environment, String connTimeOut, String readTimeOut) {
+		int timeOutInMilliSec = 60000;
 		routes.environment = environment;
-		utils.connTimeOut = connTimeOut;
-		utils.readTimeOut = readTimeOut;
+		int cTimeOut = Integer.valueOf(connTimeOut) * timeOutInMilliSec;
+		int rTimeOut = Integer.valueOf(readTimeOut) * timeOutInMilliSec;
+		utils.connTimeOut = String.valueOf(cTimeOut);
+		utils.readTimeOut = String.valueOf(rTimeOut);
 	}
 
 	public LoginResponse getLoginSession(LoginRequest loginRequest) {
@@ -833,11 +838,9 @@ public class SamcoHttpConnection {
 			ResponseEntity<?> responseEntity = null;
 			try {
 				responseEntity = utils.getRestTemplateResponse(logoutUrl, "DELETE", entity, LogoutResponse.class);
-				log.info("responseEntity.getBody() *********** "+responseEntity.getBody());
 				logoutResponse = (LogoutResponse) responseEntity.getBody();
 
 			} catch (RestClientResponseException e) {
-				log.error("e.getResponseBodyAsString() ************    "+e.getResponseBodyAsString());
 				logoutResponse = gson.fromJson(e.getResponseBodyAsString(), LogoutResponse.class);
 			}
 

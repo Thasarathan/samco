@@ -12,15 +12,12 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-import in.samco.stockNoteJavaSDK.service.SamcoHttpConnection;
-
 public class Utils {
 
 	private RestTemplate restTemplate = new RestTemplate();
-	SamcoHttpConnection httpConnection = new SamcoHttpConnection();
 	private Gson gson;
-	public int connTimeOut;
-	public int readTimeOut;
+	public String connTimeOut;
+	public String readTimeOut;
 
 	public String prettyJson(String json) {
 		gson = new GsonBuilder().setPrettyPrinting().create();
@@ -29,13 +26,12 @@ public class Utils {
 		return gson.toJson(jsonElement);
 	}
 
-	public void setTimeout(RestTemplate restTemplate, int connTimeOut, int readTimeOut) {
-//		int timeout = 60000;
+	public void setTimeout(RestTemplate restTemplate, String connTimeOut, String readTimeOut) {
 		restTemplate.setRequestFactory(new SimpleClientHttpRequestFactory());
 		SimpleClientHttpRequestFactory httpRequestFactory = (SimpleClientHttpRequestFactory) restTemplate
 				.getRequestFactory();
-		httpRequestFactory.setReadTimeout(readTimeOut);
-		httpRequestFactory.setConnectTimeout(connTimeOut);
+		httpRequestFactory.setConnectTimeout(Integer.valueOf(connTimeOut));
+		httpRequestFactory.setReadTimeout(Integer.valueOf(readTimeOut));
 	}
 
 	public String getSamcoException(String exception) {
