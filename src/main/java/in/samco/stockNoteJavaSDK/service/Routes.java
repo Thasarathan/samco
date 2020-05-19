@@ -40,7 +40,7 @@ public class Routes {
 	};
 
 	public String get(String key) {
-//		System.out.println("environment **********      " + routes.get(environment).toLowerCase() + routes.get(key));
+		System.out.println("environment **********      " + routes.get(environment).toLowerCase() + routes.get(key));
 		return routes.get(environment).toLowerCase() + routes.get(key);
 	}
 

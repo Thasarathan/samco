@@ -65,6 +65,12 @@ public class SamcoHttpConnection {
 		utils.readTimeOut = "240000";
 	}
 
+	public SamcoHttpConnection(String environment) {
+		routes.environment = environment;
+		utils.connTimeOut = "60000";
+		utils.readTimeOut = "240000";
+	}
+
 	public SamcoHttpConnection(String environment, String connTimeOut, String readTimeOut) {
 		int timeOutInMilliSec = 60000;
 		routes.environment = environment;

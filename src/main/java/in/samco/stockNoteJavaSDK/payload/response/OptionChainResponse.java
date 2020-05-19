@@ -9,6 +9,8 @@ import in.samco.stockNoteJavaSDK.payload.dto.OptionChain;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 public class OptionChainResponse extends SimpleResponse {
 
+	List<OptionChain> optionChainDetails;
+
 	List<OptionChain> optionChainResults;
 
 	public List<OptionChain> getOptionChainResults() {
@@ -19,9 +21,18 @@ public class OptionChainResponse extends SimpleResponse {
 		this.optionChainResults = optionChainResults;
 	}
 
+	public List<OptionChain> getOptionChainDetails() {
+		return optionChainDetails;
+	}
+
+	public void setOptionChainDetails(List<OptionChain> optionChainDetails) {
+		this.optionChainDetails = optionChainDetails;
+	}
+
 	@Override
 	public String toString() {
-		return "OptionChainResponse [optionChainResults=" + optionChainResults + "]";
+		return "OptionChainResponse [optionChainDetails=" + optionChainDetails + ", optionChainResults="
+				+ optionChainResults + "]";
 	}
 
 }
