@@ -26,4 +26,9 @@ public class SimpleResponse extends BaseResponseEntity {
 		this.status = status;
 	}
 
+	@Override
+	public String toString() {
+		return "SimpleResponse [status=" + status + ", statusMessage=" + statusMessage + "]";
+	}
+
 }

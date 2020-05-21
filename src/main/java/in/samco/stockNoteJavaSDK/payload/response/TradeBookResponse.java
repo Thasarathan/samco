@@ -18,4 +18,10 @@ public class TradeBookResponse extends SimpleResponse {
 	public void setTradeBookDetails(List<TradeBookEntry> tradeBookDetails) {
 		this.tradeBookDetails = tradeBookDetails;
 	}
+
+	@Override
+	public String toString() {
+		return "TradeBookResponse [tradeBookDetails=" + tradeBookDetails + "]";
+	}
+
 }

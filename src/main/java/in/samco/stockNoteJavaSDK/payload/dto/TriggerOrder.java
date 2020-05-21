@@ -80,4 +80,12 @@ public class TriggerOrder {
 		this.orderStatus = orderStatus;
 	}
 
+	@Override
+	public String toString() {
+		return "TriggerOrder [stopLossOrderNo=" + stopLossOrderNo + ", targetOrderNo=" + targetOrderNo
+				+ ", orderStatus=" + orderStatus + ", orderPrice=" + orderPrice + ", triggerPrice=" + triggerPrice
+				+ ", stopLoss=" + stopLoss + ", mainOrderNo=" + mainOrderNo + ", mainOrderStatus=" + mainOrderStatus
+				+ "]";
+	}
+
 }

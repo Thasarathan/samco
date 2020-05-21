@@ -39,4 +39,10 @@ public class IndexCandleDataResponse extends BaseResponseEntity {
 		this.statusMessage = statusMessage;
 	}
 
+	@Override
+	public String toString() {
+		return "IndexCandleDataResponse [status=" + status + ", statusMessage=" + statusMessage + ", indexCandleData="
+				+ indexCandleData + "]";
+	}
+
 }

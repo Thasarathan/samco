@@ -19,4 +19,9 @@ public class HistoricalCandleResponse extends SimpleResponse {
 		this.historicalCandleData = historicalCandleData;
 	}
 
+	@Override
+	public String toString() {
+		return "HistoricalCandleResponse [historicalCandleData=" + historicalCandleData + "]";
+	}
+
 }

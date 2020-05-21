@@ -19,4 +19,9 @@ public class OrderBookResponse extends SimpleResponse {
 		this.orderBookDetails = orderBookDetails;
 	}
 
+	@Override
+	public String toString() {
+		return "OrderBookResponse [orderBookDetails=" + orderBookDetails + "]";
+	}
+
 }

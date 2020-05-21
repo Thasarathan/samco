@@ -19,4 +19,9 @@ public class TriggerOrdersResponse extends SimpleResponse {
 		this.triggerOrders = triggerOrders;
 	}
 
+	@Override
+	public String toString() {
+		return "TriggerOrdersResponse [triggerOrders=" + triggerOrders + "]";
+	}
+
 }

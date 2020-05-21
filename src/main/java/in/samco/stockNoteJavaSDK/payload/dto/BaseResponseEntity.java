@@ -1,5 +1,6 @@
 package in.samco.stockNoteJavaSDK.payload.dto;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -59,8 +60,8 @@ public class BaseResponseEntity extends BaseResource {
 
 	@Override
 	public String toString() {
-		return "BaseResponseEntity{" + "serverTime='" + serverTime + '\'' + ", msgId='" + msgId + '\''
-				+ ", requestTime='" + requestTime + '\'' + ", userId='" + userId + '\'' + '}';
+		return "BaseResponseEntity [serverTime=" + serverTime + ", msgId=" + msgId + ", requestTime=" + requestTime
+				+ ", userId=" + userId + ", validationErrors=" + Arrays.toString(validationErrors) + "]";
 	}
 
 	@Override

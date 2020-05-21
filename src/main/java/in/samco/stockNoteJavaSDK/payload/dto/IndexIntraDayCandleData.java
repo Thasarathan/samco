@@ -57,4 +57,10 @@ public class IndexIntraDayCandleData {
 		this.volume = volume;
 	}
 
+	@Override
+	public String toString() {
+		return "IndexIntraDayCandleData [dateTime=" + dateTime + ", open=" + open + ", high=" + high + ", low=" + low
+				+ ", close=" + close + ", volume=" + volume + "]";
+	}
+
 }

@@ -14,4 +14,10 @@ public class HoldingSummary extends PositionSummary {
 	public void setPortfolioValue(String portfolioValue) {
 		this.portfolioValue = portfolioValue;
 	}
+
+	@Override
+	public String toString() {
+		return "HoldingSummary [portfolioValue=" + portfolioValue + "]";
+	}
+
 }

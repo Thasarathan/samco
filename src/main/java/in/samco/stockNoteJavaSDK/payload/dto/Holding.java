@@ -68,7 +68,7 @@ public class Holding extends Portfolio {
 		return isin;
 	}
 
-	public void setISIN(String ISIN) {
+	public void setISIN(String isin) {
 		this.isin = isin;
 	}
 
@@ -78,6 +78,14 @@ public class Holding extends Portfolio {
 
 	public void setTotalMarketToMarketPrice(String totalMarketToMarketPrice) {
 		this.totalMarketToMarketPrice = totalMarketToMarketPrice;
+	}
+
+	@Override
+	public String toString() {
+		return "Holding [holdingsQuantity=" + holdingsQuantity + ", btstHoldingsQuantity=" + btstHoldingsQuantity
+				+ ", collateralQuantity=" + collateralQuantity + ", haircut=" + haircut + ", holdingsValue="
+				+ holdingsValue + ", isin=" + isin + ", sellableQuantity=" + sellableQuantity
+				+ ", totalMarketToMarketPrice=" + totalMarketToMarketPrice + "]";
 	}
 
 }

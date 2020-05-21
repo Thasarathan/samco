@@ -145,4 +145,15 @@ public class Portfolio {
 		this.symbolDescription = symbolDescription;
 	}
 
+	@Override
+	public String toString() {
+		return "Portfolio [averagePrice=" + averagePrice + ", changeValue=" + changeValue + ", changePercent="
+				+ changePercent + ", dayGainAndLoss=" + dayGainAndLoss + ", exchange=" + exchange
+				+ ", markToMarketPrice=" + markToMarketPrice + ", lastTradedPrice=" + lastTradedPrice
+				+ ", previousClose=" + previousClose + ", productCode=" + productCode + ", symbol=" + symbol
+				+ ", symbolName=" + symbolName + ", symbolDescription=" + symbolDescription + ", tradingSymbol="
+				+ tradingSymbol + ", totalGainAndLoss=" + totalGainAndLoss + ", calculatedNetQuantity="
+				+ calculatedNetQuantity + "]";
+	}
+
 }

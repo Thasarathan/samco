@@ -19,4 +19,9 @@ public class IntradayCandleResponse extends SimpleResponse {
 		this.intradayCandleData = intradayCandleData;
 	}
 
+	@Override
+	public String toString() {
+		return "IntradayCandleResponse [intradayCandleData=" + intradayCandleData + "]";
+	}
+
 }

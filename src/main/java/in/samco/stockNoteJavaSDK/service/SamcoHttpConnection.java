@@ -670,7 +670,7 @@ public class SamcoHttpConnection {
 			log.error("Exception getMessage " + e.getMessage());
 			positionConversionResponse = new PositionConversionResponse();
 			positionConversionResponse.setStatus("failure");
-			positionConversionResponse.setStatusMsg(e.getMessage());
+			positionConversionResponse.setStatusMessage(e.getMessage());
 			return positionConversionResponse;
 		}
 

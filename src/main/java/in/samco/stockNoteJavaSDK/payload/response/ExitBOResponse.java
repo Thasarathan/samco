@@ -72,4 +72,10 @@ public class ExitBOResponse extends BaseResponseEntity {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "ExitBOResponse [status=" + status + ", orderNumber=" + orderNumber + ", statusMessage=" + statusMessage
+				+ "]";
+	}
+
 }

@@ -29,4 +29,9 @@ public class HoldingResponse extends SimpleResponse {
 		this.holdingDetails = holdingDetails;
 	}
 
+	@Override
+	public String toString() {
+		return "HoldingResponse [holdingSummary=" + holdingSummary + ", holdingDetails=" + holdingDetails + "]";
+	}
+
 }

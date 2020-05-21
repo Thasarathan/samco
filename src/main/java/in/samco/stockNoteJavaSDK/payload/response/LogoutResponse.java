@@ -30,4 +30,9 @@ public class LogoutResponse extends BaseResponseEntity {
 		this.statusMessage = statusMessage;
 	}
 
+	@Override
+	public String toString() {
+		return "LogoutResponse [status=" + status + ", statusMessage=" + statusMessage + "]";
+	}
+
 }
