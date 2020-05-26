@@ -12,11 +12,11 @@ StockNote Application Project.
     
     - Different Java methods will be exposed in the SDK for handling the multiple Stocknote APIs
     
-    - As an initial step, the client will use the Login method and in the Java response bean object, they will get user   	session identifier. Based on the user session identifier, they can able to access other API’s
+    - As an initial step, the client will use the Login method and in the Java response bean object, they will get user session identifier. Based on the user session identifier, they can able to access other API’s
     
     - Client can process the API response appropriately
     
-    - With trade API being a REST based interface and interfaces using JSON request and response messages, Java SDK provides 	   request and response objects as native Java beans (after will be appropriate de-serialisation)
+    - With trade API being a REST based interface and interfaces using JSON request and response messages, Java SDK provides request and response objects as native Java beans (after will be appropriate de-serialisation)
     
     - Through SamcoHttpConnection constructor we can pass the environment name which they want to connect 
     
@@ -54,14 +54,6 @@ StockNote Application Project.
 		<version>0.0.1-SNAPSHOT</version>
 	</dependency>
 
-4. Build/Run the Application
-
-   Open Bash Shell/Git Bash, run the following command from project base directory
-   
-		./deploy.sh
-	
-	The above command builds and deploys the war into Tomcat and starts the Tomcat Server.
-	
 5. Access the Java Bridge Api
 
 	- Java Bridge Application main class is SamcoHttpConnection 
@@ -78,19 +70,7 @@ StockNote Application Project.
 
 
   
-#### StockNote API's
-
-
-## Diagnostic - Connection - GET
-
-    /demo/diagnostic/rabbitmq/connection
-    
-Checks if TextBlue application can connect to it's embedded RabbitMQ server:
-# Response:    
-    {
-        status: "UP",
-        message: "Successfully connected to localhost : 5672"
-    }
+### StockNote API's
 
 ## Login Api
 
