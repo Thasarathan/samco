@@ -1,47 +1,58 @@
-# TextBlue Application
+# Java Bridge for Trade Api Application
 
-TextBlue Application Project.
+StockNote Application Project.
 
-## Development
+## Overview
+
+    - Java SDK is created for clients to easily access our Stocknote API platform from Java based applications.
+    
+    - Java SDK will be exposed as a downloadable JAR file
+
+    - Include the JAR file into their build path and access the trade APIs using the inbuilt classes in Java SDK
+    
+    - Different Java methods will be exposed in the SDK for handling the multiple Stocknote APIs
+    
+    - As an initial step, the client will use the Login method and in the Java response bean object, they will get user   	session identifier. Based on the user session identifier, they can able to access other API’s
+    
+    - Client can process the API response appropriately
+    
+    - With trade API being a REST based interface and interfaces using JSON request and response messages, Java SDK provides 	   request and response objects as native Java beans (after will be appropriate de-serialisation)
+    
+    - Through SamcoHttpConnection constructor we can pass the environment name which they want to connect 
+    
+    - If doesn't provide any environment then Java SDK by default invokes production version of trade api 
+    
 
 ### Prerequisites 
 
 - Java 8 JDK
-- Erlang OTP 22.1 - https://www.erlang.org/downloads/22.1
-- MySQL Server 5.7
-- MySQL Workbench(any latest version)
-- Git Client
-- Tomcat 8.5.38
 
 ### Steps
 
-1. Get CodeBase
+1. Get Java Bridge Jar
 
-	- git clone https://github.com/cloud3tech/textblue-app.git
+	- Goto https://github.com/Thasarathan/samco/tree/master/dist
 
-2. Setup App Server
+2. Setup Jar File
 
-	- Goto CATALINA_HOME\conf\catalina.properties and add the following at the end
-		
-		* shortHostname=localatl1
-		* XMS_ADDRESS=http://69.89.12.146:81/default/   ##(Atlantla Lab XMS Server Url)
+	- Goto << JavaBuild Path --> Libraries --> Add External JARs... >>
+	                           or
+	- Install jar file into your local .m2 repository using this cmd ...
 	
-2. Setup DB Server
-
-	- Import Data Dump from File from "scripts\agent511_2019-05-22.zip" after decompressing into MySQL Server using MySQL Workbench or mysql command line tool
-	- Create DB User of the application
+	  mvn install:install-file -Dfile="where the jar is located" -DgroupId=in.samco -DartifactId=stockNoteJavaSDK -		  Dversion=0.0.1-SNAPSHOT -Dpackaging=jar
 	
-		CREATE USER 'agent511DbUser'@'%' IDENTIFIED BY 'GttYMc5xCbA=';
-		GRANT ALL PRIVILEGES ON agent511.* TO 'agent511DbUser'@'%';
-		FLUSH PRIVILEGES;
 
 3. Setup Environment Variables
 
-	- JAVA_HOME=<< base directory of java installation >>
-	- ERLANG_HOME=<< base directory of Erlang installation >>
-	- RABBITMQ_NODENAME=rabbit@localhost
-	- CATALINA_HOME=<< base directory of tomcat zip >>
-	- Add %ERLANG_HOME%\bin in PATH variable if missing.
+	- JAVA_HOME = << base directory of java installation >>
+	
+4. Add Dependency into pom.xml file
+
+	<dependency>
+		<groupId>in.samco</groupId>
+		<artifactId>stockNoteJavaSDK</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</dependency>
 
 4. Build/Run the Application
 
@@ -51,34 +62,24 @@ TextBlue Application Project.
 	
 	The above command builds and deploys the war into Tomcat and starts the Tomcat Server.
 	
-5. Access the Web Application
+5. Access the Java Bridge Api
 
-	- Access Chat Simulator UI -> http://localhost:8080/demo/new-ui/simulator.html
-		
-	- Access Admin UI -> http://localhost:8080/demo/new-ui/AdminDashboard.jsp?newUI=true&lang=en-US
+	- Java Bridge Application main class is SamcoHttpConnection 
 	
-			Login Credentials -> nypd_admin/test or super_user/test
-
-### Additonal Info
-
-	- The application uses `Agent511Props_localatl1.properties` under src\main\resources for the configuration.
+	- There are two ways to create the object 
 	
-	- In Order to debug the application, you can set catalina properties such as:
+	- Creating object with zero parameterized constructor then by defalut we are connecting with production environment
 
-		CATALINA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=n"
+	  EX :  SamcoHttpConnection httpConnection = new SamcoHttpConnection();
+	  
+	- Creating object with single parameterized constructor , environment variable as the parameter which we need to               connect
 	
+	  Ex : SamcoHttpConnection httpConnection = new SamcoHttpConnection("uat");
 
-#### Jenkins Builds
 
-  * [Beta job](http://jenkins.a511.net/view/MSPREPO/job/textblue-gradle-beta/)
-  * [Beta job java 1.6](http://jenkins.a511.net/view/MSPREPO/job/textblue-gradle-beta-java6/)
-  * [Release Job](http://jenkins.a511.net/view/MSPREPO/job/textblue-gradle-release/)
-  * [Patch job](http://jenkins.a511.net/view/MSPREPO/job/textblue-gradle-patch/)
   
-  
-#### TextBlue API's
+#### StockNote API's
 
-### RabbitMQ 
 
 ## Diagnostic - Connection - GET
 
@@ -91,64 +92,183 @@ Checks if TextBlue application can connect to it's embedded RabbitMQ server:
         message: "Successfully connected to localhost : 5672"
     }
 
-## Diagnostic - execute - GET
+## Login Api
 
-    /demo/diagnostic/rabbitmq/execute
+# method - POST
 
 # Parameters:
 
-    command = a command to be executed under rabbitmqctl
+    userId, password, yob
     
+# Sample code:
+
+    LoginRequest loginRequest = new LoginRequest("userId", "password", "yob");
+    LoginResponse loginResponse = httpConnection.getLoginSession(loginRequest);
+    
+    ObjectMapper objectMapper = new ObjectMapper();
+    String prettyJsonString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(loginResponse);
+    System.out.println("login session ----->>> " + prettyJsonString);
+
 # Example request:
 
-    /demo/diagnostic/rabbitmq/execute?command=list_queues
+    https://api.stocknote.com/login
     
-# Response:     
+## Response:  
 
-    Listing queues ...
-    CallDisconnectedEventQueue	0
-    chat.event.queue	0
-    TextCallsEventsQueue	0
-    MonitorIncomingEventsQueue	0
-    rapi.elligible.event.queue	0
-    InterestingEventsQueue	0
-    IncomingCallEventQueue	0
-    TpiEventLoggingQueue	0
-    
-## Diagnostic service - Unassigned calls  - GET
-
-The diagnostic controller to identify unassigned calls (calls in queue): 
-    
-    http://localhost/demo/diagnostic/ucd?t=<time in seconds> 
-    
-Example:
- 
-    http://localhost/demo/diagnostic/ucd?t=5
-    
-This will return a HTTP status of 200 (OK) if there are no calls which have been unassigned for longer than `t` seconds. This will return a non 200 HTTP status code (like 515) if there are one or more calls which have been unassigned for longer than `t` seconds. The body will provide details for calls which are unassigned.
-
-Example output of successful (no calls in queue for longer than `t` seconds):
-
- **HTTP/1.1 200 OK**
+# Example output of successful
 
     {
-      "overall status" : "NORMAL",
-      "message" : "No active unassigned conversations exist in the system."
-    }
-    
-Example output of error condition (calls in queue for longer than `t` seconds):
+    "serverTime": "26/05/20 13:50:32",
+    "msgId": "c662bbd1-0b24-4e86-a3d9-8c89d7529f2c",
+    "sessionToken": "e0875f4aa3660b72ec636b0553acc7a9",
+    "accountID": "client_id",
+    "accountName": "client_name",
+    "exchangeList": [
+        "BSE",
+        "MCX",
+        "CDS",
+        "NSE"
+    ],
+    "orderTypeList": [
+        "L",
+        "MKT",
+        "SL"
+    ],
+    "productList": [
+        "CNC",
+        "CO",
+        "MIS"
+    ]
+   }
+   
+# Example output of error condition
 
-** HTTP/1.1 515 515**
+    {
+      "serverTime": "26/05/20 13:53:05",
+      "msgId": "ffb0be73-4620-491e-9f43-d50c692ea0ec",
+      "status": "Failure",
+      "statusMessage": "Invalid Password"
+    }
+  
+# Using that session we can call any other api’s 
+
+## Quote api 
+
+# method - GET
+
+    - to access quote api we have to pass these input's 1. session 2. exchange 3. symbol and it will return QuoteResponse
         
-		{
-          "overall status" : "ERROR",
-          "message" : "Unassigned conversations exist in the system.",
-          "PSAPs" : [ {
-            "PSAP id" : "1",
-            "conversations" : [ {
-              "conversation id" : "280746",
-              "queue id" : "1",
-              "last update" : "2018-06-14 17:19:00 EDT"
-            } ]
-          } ]
-        }
+# Parameters:
+
+    sessionToken, exchange, symbol
+    
+# Sample code:
+
+    QuoteRequest quoteRequest = new QuoteRequest("a51a7bd8f0e46c304536f4719c872ea7", "NSE", "SBIN");
+    QuoteResponse quoteDetails = httpConnection.getQuoteDetails(quoteRequest);
+    
+    ObjectMapper objectMapper = new ObjectMapper();
+    String prettyJsonString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(quoteDetails);
+    System.out.println("quote search res --->>>  " + prettyJsonString);
+    
+# Example request:
+    
+    https://api.stocknote.com/quote/getQuote?exchange=NSE&symbolName=SBIN
+    
+## Response:  
+
+# Example output of successful
+
+    {
+      "serverTime": "26/05/20 14:09:56",
+      "msgId": "70414ca5-230e-467b-81cb-62af0a5f2b95",
+      "status": "Success",
+      "statusMessage": "Quote details retrieved successfully",
+      "symbolName": "SBIN",
+      "tradingSymbol": "SBIN-EQ",
+      "exchange": "NSE",
+      "companyName": "STATE BANK OF INDIA",
+      "lastTradedTime": "26/05/2020 14:09:55",
+      "lastTradedPrice": "151.00",
+      "previousClose": "150.85",
+      "changeValue": "0.15",
+      "changePercentage": "0.10",
+      "lastTradedQuantity": "16",
+      "lowerCircuitLimit": "135.80",
+      "upperCircuitLimit": "165.90",
+      "averagePrice": "151.96",
+      "openValue": "152.40",
+      "highValue": "153.20",
+      "lowValue": "150.55",
+      "closeValue": "150.85",
+      "totalBuyQuantity": "3140492",
+      "totalSellQuantity": "9899407",
+      "totalTradedValue": "592.47019 (Crs)",
+      "totalTradedVolume": "38988562",
+      "yearlyHighPrice": "373.80",
+      "yearlyLowPrice": "149.45",
+      "bestBids": [
+          {
+              "number": "1",
+              "quantity": "9105",
+              "price": "150.95"
+          },
+          {
+              "number": "2",
+              "quantity": "16880",
+              "price": "150.90"
+          },
+          {
+              "number": "3",
+              "quantity": "20776",
+              "price": "150.85"
+          },
+          {
+              "number": "4",
+              "quantity": "38364",
+              "price": "150.80"
+          },
+          {
+              "number": "5",
+              "quantity": "23566",
+              "price": "150.75"
+          }
+      ],
+      "bestAsks": [
+          {
+              "number": "1",
+              "quantity": "3633",
+              "price": "151.00"
+          },
+          {
+              "number": "2",
+              "quantity": "2837",
+              "price": "151.05"
+          },
+          {
+              "number": "3",
+              "quantity": "8477",
+              "price": "151.10"
+          }, 
+          {
+              "number": "4",
+              "quantity": "6745",
+              "price": "151.15"
+          },
+          {
+              "number": "5",
+              "quantity": "11179",
+              "price": "151.20"
+          }
+      ],
+      "listingId": "3045_NSE"
+      }
+ 
+# Example output of error condition
+
+    {
+      "serverTime": "26/05/20 14:15:46",
+      "validationErrors": [
+          "Please enter a valid exchange - BSE/NSE/NFO/CDS/MCX"
+       ]
+    }
