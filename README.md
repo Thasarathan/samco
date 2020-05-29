@@ -4,24 +4,23 @@ StockNote Application Project.
 
 ## Overview
 
-    - Java SDK is created for clients to easily access our Stocknote API platform from Java based applications.
-    
-    - Java SDK will be exposed as a downloadable JAR file
-
-    - Include the JAR file into their build path and access the trade APIs using the inbuilt classes in Java SDK
-    
-    - Different Java methods will be exposed in the SDK for handling the multiple Stocknote APIs
-    
-    - As an initial step, the client will use the Login method and in the Java response bean object, they will get user session identifier. Based on the user session identifier, they can able to access other API’s
-    
-    - Client can process the API response appropriately
-    
-    - With trade API being a REST based interface and interfaces using JSON request and response messages, Java SDK provides request and response objects as native Java beans (after will be appropriate de-serialisation)
-    
-    - Through SamcoHttpConnection constructor we can pass the environment name which they want to connect 
-    
-    - If doesn't provide any environment then Java SDK by default invokes production version of trade api 
-    
+   - Java SDK is created for clients to easily access our Stocknote API platform from Java based applications.
+   
+   - Java SDK will be exposed as a downloadable JAR file
+   
+   - Include the JAR file into their build path and access the trade APIs using the inbuilt classes in Java SDK
+   
+   - Different Java methods will be exposed in the SDK for handling the multiple Stocknote APIs
+   
+   - As an initial step, the client will use the Login method and in the Java response bean object, they will get user session identifier. Based on the user session identifier, they can able to access other API’s
+   
+   - Client can process the API response appropriately
+   
+   - With trade API being a REST based interface and interfaces using JSON request and response messages, Java SDK provides request and response objects as native Java beans (after will be appropriate de-serialisation)
+   
+   - Through SamcoHttpConnection constructor we can pass the environment name which they want to connect 
+   
+   - If doesn't provide any environment then Java SDK by default invokes production version of trade api 
 
 ### Prerequisites 
 
@@ -70,17 +69,17 @@ StockNote Application Project.
 
 
   
-### StockNote API's
+## StockNote API's
 
-## Login Api
+## Login Api - Method - POST
 
-# method - POST
+   The Java Bridge allow the user authentication using the Login API. A valid StockNote Trading Account and subscription to StockNote API Services is a pre-requisite for successful authentication.
 
-# Parameters:
+### Parameters:
 
     userId, password, yob
     
-# Sample code:
+### Sample code:
 
     LoginRequest loginRequest = new LoginRequest("userId", "password", "yob");
     LoginResponse loginResponse = httpConnection.getLoginSession(loginRequest);
@@ -89,13 +88,13 @@ StockNote Application Project.
     String prettyJsonString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(loginResponse);
     System.out.println("login session ----->>> " + prettyJsonString);
 
-# Example request:
+### Example request:
 
     https://api.stocknote.com/login
     
-## Response:  
+### Response:  
 
-# Example output of successful
+### Example output of successful
 
     {
     "serverTime": "26/05/20 13:50:32",
@@ -121,7 +120,7 @@ StockNote Application Project.
     ]
    }
    
-# Example output of error condition
+### Example output of error condition
 
     {
       "serverTime": "26/05/20 13:53:05",
@@ -130,19 +129,19 @@ StockNote Application Project.
       "statusMessage": "Invalid Password"
     }
   
-# Using that session we can call any other api’s 
+### Using that session we can call any other api’s 
 
-## Quote api 
+## Quote api - Method - GET
 
-# method - GET
+   Get market depth details for a specific equity scrip including but not limited to values like last trade price, previous close price, change value, change percentage, bids/asks, upper and lower circuit limits etc. This helps user with market picture of an equity scrip using which he will be able to place an order.
 
-    - to access quote api we have to pass these input's 1. session 2. exchange 3. symbol and it will return QuoteResponse
+   To access quote api we have to pass these input's 1. session 2. exchange 3. symbol and it will return QuoteResponse
         
-# Parameters:
+### Parameters:
 
     sessionToken, exchange, symbol
     
-# Sample code:
+### Sample code:
 
     QuoteRequest quoteRequest = new QuoteRequest("a51a7bd8f0e46c304536f4719c872ea7", "NSE", "SBIN");
     QuoteResponse quoteDetails = httpConnection.getQuoteDetails(quoteRequest);
@@ -151,13 +150,13 @@ StockNote Application Project.
     String prettyJsonString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(quoteDetails);
     System.out.println("quote search res --->>>  " + prettyJsonString);
     
-# Example request:
+### Example request:
     
     https://api.stocknote.com/quote/getQuote?exchange=NSE&symbolName=SBIN
     
-## Response:  
+### Response:  
 
-# Example output of successful
+### Example output of successful
 
     {
       "serverTime": "26/05/20 14:09:56",
@@ -240,11 +239,11 @@ StockNote Application Project.
               "quantity": "11179",
               "price": "151.20"
           }
-      ],
-      "listingId": "3045_NSE"
+      ],``
+      "listingId": "3045_NSE"````
       }
  
-# Example output of error condition
+### Example output of error condition
 
     {
       "serverTime": "26/05/20 14:15:46",
