@@ -47,11 +47,19 @@ StockNote Application Project.
 	
 4. Add Dependency into pom.xml file
 
-	<dependency>
-		<groupId>in.samco</groupId>
-		<artifactId>stockNoteJavaSDK</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	</dependency>
+        	<dependency>
+		           <groupId>in.samco</groupId>
+		           <artifactId>stockNoteJavaSDK</artifactId>
+		           <version>0.0.1-SNAPSHOT</version>
+	           </dependency>
+		   
+      - to print preety json you can add this dependency into our pom.xml
+		   
+		     <dependency>
+		 	  <groupId>com.fasterxml.jackson.core</groupId>
+			  <artifactId>jackson-databind</artifactId>
+			  <version>2.9.8</version>
+		     </dependency>
 
 5. Access the Java Bridge Api
 
@@ -79,7 +87,7 @@ StockNote Application Project.
 
     userId, password, yob
     
-### Sample code:
+### Sample code:e
 
     LoginRequest loginRequest = new LoginRequest("userId", "password", "yob");
     LoginResponse loginResponse = httpConnection.getLoginSession(loginRequest);
