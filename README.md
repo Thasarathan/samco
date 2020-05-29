@@ -69,11 +69,11 @@ StockNote Application Project.
 	
 	- Creating object with zero parameterized constructor then by defalut we are connecting with production environment
 
-	  EX :  SamcoHttpConnection httpConnection = new SamcoHttpConnection();
+	    EX :  SamcoHttpConnection httpConnection = new SamcoHttpConnection();
 	  
 	- Creating object with single parameterized constructor , environment variable as the parameter which we need to               connect
 	
-	  Ex : SamcoHttpConnection httpConnection = new SamcoHttpConnection("uat");
+	    Ex : SamcoHttpConnection httpConnection = new SamcoHttpConnection("uat");
 
 
   
