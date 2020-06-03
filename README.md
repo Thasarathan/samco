@@ -35,7 +35,9 @@ StockNote Application Project.
 2. Setup Jar File
 
 	- Goto << JavaBuild Path --> Libraries --> Add External JARs... >>
+	
 	                           or
+				   
 	- Install jar file into your local .m2 repository using this cmd ...
 	
 	  mvn install:install-file -Dfile="where the jar is located" -DgroupId=in.samco -DartifactId=stockNoteJavaSDK -		  Dversion=0.0.1-SNAPSHOT -Dpackaging=jar
