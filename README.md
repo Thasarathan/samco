@@ -24,7 +24,7 @@ StockNote Application Project.
 
 ### Prerequisites 
 
-- Java 8 JDK
+- Java 7 JDK or Java 8 JDK
 
 ### Steps
 
