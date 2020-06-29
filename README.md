@@ -42,7 +42,7 @@
 				   
 	- Install jar file into your local .m2 repository using this cmd ...
 	
-	  mvn install:install-file -Dfile="where the jar is located" -DgroupId=in.samco -DartifactId=stockNoteJavaSDK -		  Dversion=0.0.1-SNAPSHOT -Dpackaging=jar
+	  mvn install:install-file -Dfile="where the jar is located" -DgroupId=io.swagger -DartifactId=swagger-java-client -Dversion=1.0.0 -Dpackaging=jar
 	
 
 3. Setup Environment Variables
@@ -52,18 +52,10 @@
 4. Add Dependency into pom.xml file
 
         	<dependency>
-		           <groupId>in.samco</groupId>
-		           <artifactId>stockNoteJavaSDK</artifactId>
-		           <version>0.0.1-SNAPSHOT</version>
+		           <groupId>io.swagger</groupId>
+		           <artifactId>swagger-java-client</artifactId>
+		           <version>1.0.0</version>
 	           </dependency>
-		   
-      - to print preety json you can add this dependency into our pom.xml
-		   
-		     <dependency>
-		 	  <groupId>com.fasterxml.jackson.core</groupId>
-			  <artifactId>jackson-databind</artifactId>
-			  <version>2.9.8</version>
-		     </dependency>
 
 5. Access the Java Bridge Api
 
