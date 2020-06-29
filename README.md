@@ -20,9 +20,9 @@
    
    - With trade API being a REST based interface and interfaces using JSON request and response messages, Java SDK provides request and response objects as native Java beans (after will be appropriate de-serialisation)
    
-   - Through SamcoHttpConnection constructor we can pass the environment name which they want to connect 
+   - Through ApiClient.setBasePath("") setter method we can pass the environment name which we want to connect 
    
-   - If doesn't provide any environment then Java SDK by default invokes production version of trade api 
+   - If doesn't provide any environment then Java SDK by default invokes production version of Stocknote API
 
 ### Prerequisites 
 
