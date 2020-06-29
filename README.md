@@ -1,6 +1,10 @@
-# Java Bridge for Trade Api Application
+# Java Bridge for Stocknote API
 
-StockNote Application Project.
+   Official Java Bridge for accessing Stocknote API
+   
+   This documentation covers details of the Java bridge / SDK provided by SAMCO, for accessing the 
+   
+   <a href="https://developers.stocknote.com/api/?python#stocknote-api-documentation">SAMCO Stocknote APIs.</a>
 
 ## Overview
 
