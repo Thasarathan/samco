@@ -40,16 +40,9 @@
 	
 	                           or
 				   
-	- Install jar file into your local .m2 repository using this cmd ...
+	- Install jar file into your local .m2 repository using this cmd and add this dependency into pom.xml file ...
 	
 	  mvn install:install-file -Dfile="where the jar is located" -DgroupId=io.swagger -DartifactId=swagger-java-client -Dversion=1.0.0 -Dpackaging=jar
-	
-
-3. Setup Environment Variables
-
-	- JAVA_HOME = << base directory of java installation >>
-	
-4. Add Dependency into pom.xml file
 
         	<dependency>
 		           <groupId>io.swagger</groupId>
@@ -57,19 +50,6 @@
 		           <version>1.0.0</version>
 	           </dependency>
 
-5. Access the Java Bridge Api
-
-	- Java Bridge Application main class is SamcoHttpConnection 
-	
-	- There are two ways to create the object 
-	
-	- Creating object with zero parameterized constructor then by defalut we are connecting with production environment
-
-	    EX :  SamcoHttpConnection httpConnection = new SamcoHttpConnection();
-	  
-	- Creating object with single parameterized constructor , environment variable as the parameter which we need to               connect
-	
-	    Ex : SamcoHttpConnection httpConnection = new SamcoHttpConnection("uat");
 
 
 ### Login Api
