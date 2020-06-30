@@ -23,6 +23,12 @@
    - Through ApiClient.setBasePath("") setter method we can pass the environment name which we want to connect 
    
    - If doesn't provide any environment then Java SDK by default invokes production version of Stocknote API
+   
+#### Sample Request for environment changes:   
+
+    ApiClient apiClient = new ApiClient();
+    apiClient.setBasePath(basePath);
+    Configuration.setDefaultApiClient(apiClient);
 
 ### Prerequisites 
 
