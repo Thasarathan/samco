@@ -4,7 +4,9 @@
    
    This documentation covers details of the Java bridge / SDK provided by SAMCO, for accessing the [SAMCO Stocknote APIs.](https://developers.stocknote.com/api/?python#stocknote-api-documentation)
    
-   [Search Equity](https://github.com/Thasarathan/samco/edit/master/README.md#L181)
+   
+   
+   
 
 ## Overview
 
@@ -60,7 +62,7 @@
 
 
 
-### Login Api
+### <h1 id="someid">Login Api</h1>
 
    The Java Bridge allow the user authentication using the UserLoginApi. A valid StockNote Trading Account and subscription to StockNote API Services is a pre-requisite for successful authentication.
 
@@ -274,7 +276,7 @@
       }
     }
 
-###  Order Status:
+###  <a href="#someid">Order Status:</a>
 
    Get status of an order placed previously. This API returns all states of the orders,but not limited to open, pending, and partially filled ones.
      
