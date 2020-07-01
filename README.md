@@ -4,7 +4,11 @@
    
    This documentation covers details of the Java bridge / SDK provided by SAMCO, for accessing the [SAMCO Stocknote APIs.](https://developers.stocknote.com/api/?python#stocknote-api-documentation)
    
+   <a href="#login_api_autoscroll">Login api:</a>
    
+   <a href="#quote_api_autoscroll">Quote api:</a>
+   
+   <a href="#equity_search_api_autoscroll">Equity search api:</a>
    
    
 
@@ -62,7 +66,7 @@
 
 
 
-### <h1 id="someid">Login Api</h1>
+### <h3 id="login_api_autoscroll">Login Api</h3>
 
    The Java Bridge allow the user authentication using the UserLoginApi. A valid StockNote Trading Account and subscription to StockNote API Services is a pre-requisite for successful authentication.
 
@@ -107,7 +111,7 @@
     
 #### Using that session we can call any other api’s through java sdk
 
-###  Quote:
+###  <h3 id="quote_api_autoscroll">Quote:</h3>
 
    Get market depth details for a specific equity scrip including but not limited to values like last trade price, previous close price, change value, change percentage, bids/asks, upper and lower circuit limits etc. This helps user with market picture of an equity scrip using which he will be able to place an order.
 
@@ -180,7 +184,7 @@
       "listingId": "3045_NSE"
       }
  
-### Search Equity & Derivative:
+### <h3 id="equity_search_api_autoscroll">Search Equity & Derivative:</h3>
 
    This API is used to search equity, derivatives and commodity scrips based on user provided search symbol and exchange name.
 
