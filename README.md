@@ -3,6 +3,8 @@
    Official Java Bridge for accessing Stocknote API
    
    This documentation covers details of the Java bridge / SDK provided by SAMCO, for accessing the [SAMCO Stocknote APIs.](https://developers.stocknote.com/api/?python#stocknote-api-documentation)
+   
+   [Search Equity](https://github.com/Thasarathan/samco/edit/master/README.md#L181)
 
 ## Overview
 
